@@ -1,0 +1,8 @@
+#ignorar arquivos
+*.war
+#ignorar pastas
+log/
+dist/
+test/
+build/
+templates/

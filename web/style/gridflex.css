@@ -1,0 +1,94 @@
+.flex-container {
+
+    padding: 0;
+    list-style: none;
+    /*border: 1px solid silver;*/
+    -ms-box-orient: horizontal;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -moz-flex;
+    display: -webkit-flex;
+    display: flex;
+}
+
+.wrap  {
+    -webkit-flex-wrap: wrap;
+    -moz-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.wrap li {
+
+    background: white;
+
+}
+.child-fexTop{
+    
+    width: 100%;
+    height: 90%;
+}
+.child-fexBottom{
+    
+    width: 100%;
+    height: 10%;
+}
+
+.flex-item {
+
+    position: relative;
+    padding: 1px;
+    width: 200px;
+    height: 260px;
+    margin: 1px;
+    color: gray;
+    text-align: center;
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+    -moz-transform: scale(0.9);
+    -webkit-transition: -webkit-transform 0.5s ease;
+    -moz-transition: -moz-transform 0.5s ease;
+    transition: transform 0.5s ease;
+
+}
+
+.flex-item-sessao2 {
+
+    position: relative;
+    width: 341px;
+    height: 276px;
+    color: gray;
+    text-align: center;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -moz-transform: scale(1);
+    -webkit-transition: -webkit-transform 0.5s ease;
+    -moz-transition: -moz-transform 0.5s ease;
+    transition: transform 0.5s ease;
+
+}
+
+.flex-itemGrade {
+
+    position: relative;
+    text-align: center;
+    width: 302.133px;
+    height: 125.5px;
+
+}
+
+.flex-item:hover{
+
+    cursor:pointer;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+    -moz-transform: scale(1);
+}
+
+.flex-item-sessao2:hover{
+
+    cursor:pointer;
+    -webkit-transform: scale(1.05);
+    transform: scale(1.05);
+    -moz-transform: scale(1.05);
+}

@@ -1,0 +1,158 @@
+.btMenu{
+
+    width: 30px;
+    height: 30px;
+    max-height: 30px;
+    min-height: 30px;
+    max-width: 30px;
+    min-width: 30px;
+    cursor: pointer;
+    -webkit-transition: -webkit-transform 0.1s ease;
+    -moz-transition: -moz-transform 0.1s ease;
+    transition: transform 0.1s ease;
+    -webkit-transform: scale(0.9);
+    -moz-transform: scale(0.9);
+    -o-transform: scale(0.9);
+    transform: scale(0.9);
+
+}
+
+.bar1, .bar2, .bar3 {
+
+    width: 35px;
+    height: 5px;
+    background-color: #4da6ff;
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.change .bar1 {
+    -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+    transform: rotate(-45deg) translate(-9px, 6px);
+}
+
+.change .bar2 {opacity: 0;}
+
+.change .bar3 {
+    -webkit-transform: rotate(45deg) translate(-8px, -8px);
+    transform: rotate(45deg) translate(-8px, -8px);
+}
+
+
+.btMenu:hover{
+
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+
+
+}
+.dropbtn {
+
+    padding: 5px;
+    font-size: 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 2px;
+    text-align: center;
+    top: 50%;
+    margin-top: 15%;
+    position: relative;
+}
+
+.dropdown {
+
+    position: relative;
+    display: inline-block;
+
+}
+
+.dropdown-content {
+
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+
+}
+
+.dropdown-content div {
+
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+
+}
+
+.dropdown-content div:hover {
+
+    color: #00AAFF;
+
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+
+    /*    background-color: #3e8e41;*/
+}
+
+#nomeSistema{
+
+    opacity: 0.8;
+}
+
+
+.textTitulo {
+    text-transform: uppercase;
+    padding: 5px 0px;
+    display: block;
+    font-size: 18px;
+    color: #FFFFFF;
+    text-align: center;
+    font-weight: 400;
+    line-height: 30px;
+
+}
+.imgFundo {
+
+    opacity: 0.5;
+    filter: alpha(opacity=50);
+    width: 100%;
+    height: 100%;
+}
+
+.loader {
+    background-color: lightgray;
+    opacity: 0.3
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #4d94ff;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 0.5s linear infinite; /* Safari */
+    animation: spin 0.5s linear infinite;
+}
+
+.dropMenu{
+    
+    
+}
+.dropdown-popup{}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

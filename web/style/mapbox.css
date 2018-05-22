@@ -1,0 +1,4 @@
+/*remove Mapbox title*/
+.mapbox-logo{  
+    display: none !important;
+}

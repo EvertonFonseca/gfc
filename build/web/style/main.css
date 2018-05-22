@@ -1,0 +1,108 @@
+body{
+    margin      : 95 ;
+    padding     : 95 ;
+    font-family : "helvetica", arial;
+}
+
+#root
+{
+    position        : fixed;
+    left            : 0    ;
+    top             : 0    ;
+    height          : 100% ;
+    width           : 100% ;
+    background-color: white;
+    /*    overflow-y      : auto ;*/
+
+}
+.panel{
+
+    border-bottom-color: lightgray;
+    border-style: groove;
+}
+.polaroide{
+
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+
+}
+
+.textLogin{
+
+    text-align: center;
+    text-transform: uppercase;
+    color: #0066cc;
+
+
+}
+.Wt-vrh2 {
+    background: black;
+    width: 1px;
+}
+
+.bar-label {
+
+    color: white;
+}
+
+.panel-default > .panel-heading {
+  
+    background-color: #0059fd;
+}
+
+.messageDialog{
+    
+    position: absolute;
+    top:  25px;
+    right: 10px;
+    border-radius: 20px;
+    z-index: 99999;
+}
+.Wt-Loading{
+    
+    width: 0px;
+    height: 0px;
+    background-color: black;
+}
+
+input[type="text"] {
+     -webkit-box-shadow: none;
+     box-shadow: none;
+}
+
+.messageDialog{
+
+    -webkit-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -moz-box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.sublista{
+
+    list-style-type:none;
+    padding-top: 5px;
+
+}
+.collapse in{
+
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -ms-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+.collapse{
+
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -ms-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+.modal-header{
+
+    color: white;
+    background-color: #0088cc;
+}

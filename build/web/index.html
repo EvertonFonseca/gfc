@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <link rel="shortcut icon" type="image/png" href="assets/img/favicon.png">
+        <title>Solinftec - GCF</title>
+        <script>
+       function main(){
+         window.location.href = "login"   
+       }
+        </script>
+        
+        <style>
+            .divMain{
+                
+                width: 120px;
+                height: 180px;
+                position: absolute;
+                left: 50%;
+                top: 25%;
+                margin-left:-60px;
+                margin-top: -90px;
+                
+            }
+            
+            h3 {
+                margin-left: 10px;
+                text-align: center;
+                text-transform: uppercase;
+                color: #4d94ff;
+                font-size: 60px;
+            }
+            .loader {
+                border: 16px solid #f3f3f3;
+                border-radius: 50%;
+                border-top: 16px solid #4d94ff;
+                width: 120px;
+                height: 120px;
+                -webkit-animation: spin 0.5s linear infinite; /* Safari */
+                animation: spin 0.5s linear infinite;
+            }
+
+            /* Safari */
+            @-webkit-keyframes spin {
+                0% { -webkit-transform: rotate(0deg); }
+                100% { -webkit-transform: rotate(360deg); }
+            }
+
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    </head>
+    <body onload="main()">
+        <div class="divMain">
+        <h3>GCF</h3>
+       <div class="loader"></div>
+        </div>
+    </body>
+</html>
+

@@ -236,7 +236,7 @@ public class DivLotes extends WContainerWidget implements Signal1.Listener<Strin
 
     private void modelTable(String[] header, WTableView tableView, boolean isSorting, int index) {
 
-        Signal1 signalLotes = new Signal1();
+        Signal1 signalLote = new Signal1();
 
         VirtualModelLotes<Lote_DTO> model = new VirtualModelLotes(web,0, header, tableView);
         model.setIsSorting(isSorting);
@@ -244,7 +244,7 @@ public class DivLotes extends WContainerWidget implements Signal1.Listener<Strin
 
         Loader loader = new Loader(web);
 
-        signalLotes.addListener(this, ((arg) -> {
+        signalLote.addListener(this, ((arg) -> {
 
             List<Lote_DTO> lotes = (List<Lote_DTO>) arg;
 
@@ -318,7 +318,7 @@ public class DivLotes extends WContainerWidget implements Signal1.Listener<Strin
 
         }));
 
-        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(),signalLotes) {
+        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(),signalLote) {
             @Override
             public void run(){
 

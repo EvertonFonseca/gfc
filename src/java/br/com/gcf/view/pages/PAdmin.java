@@ -130,6 +130,10 @@ public class PAdmin extends WContainerWidget {
     public ContentMain getContentMain() {
         return contentMain;
     }
+
+    public Web getWeb() {
+        return web;
+    }
     
     
 }

@@ -6,6 +6,7 @@
 package br.com.gcf.view;
 
 import br.com.gcf.control.CookieLogin;
+import br.com.gcf.control.dao.Usuario_DAO;
 import br.com.gcf.model.components.control.EditLine;
 import br.com.gcf.view.utils.FrmLostPassword;
 import eu.webtoolkit.jwt.Cursor;
@@ -14,6 +15,8 @@ import eu.webtoolkit.jwt.WCheckBox;
 import eu.webtoolkit.jwt.WContainerWidget;
 import eu.webtoolkit.jwt.WLineEdit;
 import br.com.gcf.model.components.control.Button;
+import br.com.gcf.model.components.dialog.DMessagem;
+import br.com.gcf.model.dto.Usuario_DTO;
 import eu.webtoolkit.jwt.WImage;
 import eu.webtoolkit.jwt.WSound;
 import eu.webtoolkit.jwt.WTemplate;
@@ -28,16 +31,16 @@ public class PageLogin extends WContainerWidget {
     private EditLine textEmail, textSenha;
     private WSound sound;
     private Web web;
-    
+    private Button btLogin;
+
     public PageLogin(Web web) {
 
         setOverflow(Overflow.OverflowHidden);
-        
+
         this.web = web;
         this.init();
-        
-       // this.Sound();
 
+        // this.Sound();
     }
 
     private void init() {
@@ -47,8 +50,8 @@ public class PageLogin extends WContainerWidget {
         String key = WApplication.getInstance().getEnvironment().getCookieValue(Index.SESSION_ID_NAME);
 
         String cookieEmail = "Everton Fonseca";
-        String cookieSenha = "1334";
-  
+        String cookieSenha = "ssbwarcq";
+
 //        if (Index.mapCookies.containsKey(key)) {
 //
 //            CookieLogin cookie = Index.mapCookies.get(key);
@@ -59,12 +62,11 @@ public class PageLogin extends WContainerWidget {
 //                cookieSenha = cookie.getPassword();
 //            }
 //        }
-
         WImage imageLogo = new WImage("assets/img/logo-dark.png");
 
         this.textEmail = new EditLine(cookieEmail);
         textEmail.setStyleClass("form-control");
-        textEmail.setPlaceholderText("Email");
+        textEmail.setPlaceholderText("Email ou Nome");
         textEmail.setSelection(textEmail.getText().length(), textEmail.getText().length());
 
         this.textSenha = new EditLine(cookieSenha);
@@ -75,16 +77,25 @@ public class PageLogin extends WContainerWidget {
         WCheckBox checkBox = new WCheckBox("Remember me");
         checkBox.setChecked(true);
 
-        Button btLogin = new Button("Login",20);
+        this.btLogin = new Button("Login", 20);
         btLogin.setStyleClass("btn btn-primary btn-lg btn-block");
 
         btLogin.clicked().addListener(this, (mouse) -> {
 
-            if(isUserEmpty())
+            if (isUserEmpty()) {
+              
+                this.btLogin.setEnabled(false);
+                DMessagem mesagem = web.createMessageTemp("O campo Email ou Nome não foi preenchido!", Web.Tipo_Mensagem.AVISO);
+                mesagem.getSignalClosing().addListener(mesagem, () -> {
+                    this.btLogin.setEnabled(true);
+                });
                 return;
-            
-            Web.getUsuarioLogin().setNome(textEmail.getText());
-            Web.getUsuarioLogin().setPassword(textSenha.getText());
+            }
+            //checa se o login é valido
+            if (!checaUserLoginOn()) {
+
+                return;
+            }
 
             if (checkBox.isChecked()) {
 
@@ -100,17 +111,17 @@ public class PageLogin extends WContainerWidget {
 
                 }
             }
-            
+
             if (this.sound != null) {
                 this.sound.stop();
                 this.sound = null;
             }
-            
+
             this.web.getServer().postAll(textEmail.getText());
-            
+
             System.out.println("Conection Email: " + textEmail.getText());
             WApplication.getInstance().setInternalPath("admin", true);
-           
+
         });
 
         WText textForgetPass = new WText("<a>Forgot password?</a>");
@@ -125,7 +136,7 @@ public class PageLogin extends WContainerWidget {
             new FrmLostPassword(web);
         });
 
-        template.bindWidget("image-logo",imageLogo);
+        template.bindWidget("image-logo", imageLogo);
         template.bindWidget("edit-email", textEmail);
         template.bindWidget("edit-password", textSenha);
         template.bindWidget("edit-check", checkBox);
@@ -139,29 +150,61 @@ public class PageLogin extends WContainerWidget {
             e.printStackTrace();
         }
     }
-    private boolean isUserEmpty(){
-        
+
+    private boolean isUserEmpty() {
+
         boolean status = false;
-        
-        if(textEmail.getText().isEmpty() || textSenha.getText().isEmpty()){
-            
-            this.web.createMessageTemp("Usuário não encontrado!",Web.Tipo_Mensagem.AVISO);
+
+        if (textEmail.getText().isEmpty() || textSenha.getText().isEmpty()) {
+
+            this.btLogin.setEnabled(false);
+            DMessagem mesagem = this.web.createMessageTemp("Usuário não encontrado!", Web.Tipo_Mensagem.AVISO);
+            mesagem.getSignalClosing().addListener(mesagem, () -> {
+                this.btLogin.setEnabled(true);
+            });
             status = true;
         }
-        
+
         return status;
     }
-    
+
     void Sound() {
 
         this.sound = new WSound("sound/scape_alarm.webm", this);
         sound.setLoops(0);
         sound.play();
-        
-    }
-
-    private void checaUserLoginOn() {
 
     }
-    
+
+    private boolean checaUserLoginOn() {
+
+        Usuario_DTO user = Usuario_DAO.isLoginSignInValid(textEmail.getText(), textSenha.getText());
+        boolean status = user != null;
+
+        if (status) {
+
+            if (user.isAtivo()) {
+                this.btLogin.setEnabled(false);
+                DMessagem mesagem = web.createMessageTemp("Usuario, já esta logado no sistema!", Web.Tipo_Mensagem.AVISO);
+                mesagem.getSignalClosing().addListener(mesagem, () -> {
+                    this.btLogin.setEnabled(true);
+                });
+                status = false;
+            } else {
+
+                Usuario_DAO.updateAtivo(user.getId(), true);
+                user.setAtivo(true);
+                this.web.setUsuarioLogin(user);
+            }
+        } else {
+            this.btLogin.setEnabled(false);
+            DMessagem mesagem = web.createMessageTemp("Email, Nome ou senha não foram encontradas!", Web.Tipo_Mensagem.AVISO);
+            mesagem.getSignalClosing().addListener(mesagem, () -> {
+                this.btLogin.setEnabled(true);
+            });
+        }
+
+        return status;
+    }
+
 }

@@ -5,12 +5,15 @@
  */
 package br.com.gcf.view.utils;
 
+import br.com.gcf.control.dao.Usuario_DAO;
 import br.com.gcf.control.email.M7Email;
 import br.com.gcf.control.threads.ReportBean;
 import br.com.gcf.control.threads.ReportTask;
 import br.com.gcf.model.components.control.Button;
 import br.com.gcf.model.components.control.EditLine;
 import br.com.gcf.model.components.dialog.Loader;
+import br.com.gcf.model.dto.Usuario_DTO;
+import br.com.gcf.model.table.UsuarioTableModel;
 import br.com.gcf.view.Web;
 import eu.webtoolkit.jwt.Signal1;
 import eu.webtoolkit.jwt.WApplication;
@@ -43,15 +46,16 @@ public class FrmLostPassword extends WDialog {
 
         WContainerWidget divCenter = new WContainerWidget(getContents());
 
-        WText textEmail = new WText("<h3>Email:</h3>");
+        String hostName = WApplication.getInstance().getEnvironment().getHostName()+"/GCF/login";
+        WText textEmail = new WText("<h4>Email:</h4>");
         EditLine editEmail = new EditLine();
         editEmail.setPlaceholderText("Digite o seu email");
 
-        Button btFechar = new Button("Sair", getFooter(), 10);
-        btFechar.setStyleClass("btn-danger");
-
         Button btEnviar = new Button("Enviar", getFooter(), 10);
         btEnviar.setDefault(true);
+
+        Button btFechar = new Button("Sair", getFooter(), 10);
+        btFechar.setStyleClass("btn-danger");
 
         btFechar.clicked().addListener(btFechar, (mouse) -> {
             reject();
@@ -59,6 +63,19 @@ public class FrmLostPassword extends WDialog {
         });
 
         btEnviar.clicked().addListener(btFechar, (mouse) -> {
+
+            //check se o email é valido
+            if (!UsuarioTableModel.isEmailValid(editEmail.getText())) {
+
+                web.createMessageTemp("Email " + editEmail.getText() + " é invalido!", Web.Tipo_Mensagem.AVISO);
+                return;
+            }
+            //check se o email exist nos registros
+            if (!Usuario_DAO.isEmailExist(editEmail.getText())) {
+
+                web.createMessageTemp("Email " + editEmail.getText() + " é invalido!", Web.Tipo_Mensagem.AVISO);
+                return;
+            }
 
             web.createMessageTemp("Enviando Email para " + editEmail.getText(), Web.Tipo_Mensagem.AVISO, 5000);
             Loader loader = new Loader(web);
@@ -85,10 +102,17 @@ public class FrmLostPassword extends WDialog {
                     M7Email email = new M7Email();
                     boolean statusOp = false;
                     try {
-                       
-                        statusOp = email.sendEmail("Forget password", "Link: http://localhost:3501/GCF/", editEmail.getText());
+                        Usuario_DTO user = Usuario_DAO.readUsuarioByName(editEmail.getText());
 
-                    }  finally {
+                        if (user != null) {
+                        
+                            StringBuffer buffer = new StringBuffer();
+                            buffer.append("Nome: " + user.getNome() + "\nEmail: " + user.getEmail() + "\nSenha: " + user.getPassword() + "\n");
+                            buffer.append("Link: http://"+hostName);
+                            statusOp = email.sendEmail("Esqueceu a Senha",buffer.toString(), editEmail.getText());
+                        }
+                        
+                    } finally {
 
                         this.beginLock();
 

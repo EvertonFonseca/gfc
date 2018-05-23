@@ -115,8 +115,8 @@ public class NavBar extends WContainerWidget {
         imgUser.setStyleClass("img-circle fa fa-user-o");
         imgUser.getDecorationStyle().getFont().setSize(WFont.Size.Larger, WLength.Auto);
 
-        WText nameUser = new WText(tratarNomeLength(Web.getUsuarioLogin().getNome()));
-        nameUser.setToolTip("Usuário logado: " + Web.getUsuarioLogin().getNome());
+        WText nameUser = new WText(tratarNomeLength(pgAdmin.getWeb().getUsuarioLogin().getNome()));
+        nameUser.setToolTip("Usuário logado: " + pgAdmin.getWeb().getUsuarioLogin().getNome());
 
         //menu user
         WText userLogout = new WText("<i class=\"lnr lnr-exit\"></i> <span>Logout</span>");

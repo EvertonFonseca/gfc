@@ -5,11 +5,9 @@
  */
 package br.com.gcf.model.components.dialog;
 
-import br.com.gcf.view.Web;
 import eu.webtoolkit.jwt.AlignmentFlag;
-import eu.webtoolkit.jwt.Side;
+import eu.webtoolkit.jwt.Signal;
 import eu.webtoolkit.jwt.WAnimation;
-import eu.webtoolkit.jwt.WBorder;
 import eu.webtoolkit.jwt.WColor;
 import eu.webtoolkit.jwt.WContainerWidget;
 import eu.webtoolkit.jwt.WFont;
@@ -31,6 +29,7 @@ public class DMessagem extends WContainerWidget {
     public static String IMAGE_WARNING = "images/warning.png";
     private WTimer timer;
     private boolean isReady;
+    private Signal signalClosing;
 
     public DMessagem(String message, String image, WContainerWidget parent) {
         super(parent);
@@ -53,6 +52,8 @@ public class DMessagem extends WContainerWidget {
             if (isReady) {
 
                 this.timer.stop();
+                this.signalClosing.trigger();
+                this.signalClosing = null;
                 parent.removeWidget(this);
 
             } else {
@@ -88,6 +89,8 @@ public class DMessagem extends WContainerWidget {
             if (isReady) {
 
                 this.timer.stop();
+                this.signalClosing.trigger();
+                this.signalClosing = null;
                 parent.removeWidget(this);
 
             } else {
@@ -103,13 +106,14 @@ public class DMessagem extends WContainerWidget {
 
     private void init() {
 
+        this.signalClosing = new Signal(this);
         this.setStyleClass("messageDialog");
         this.setPopup(true);
         this.resize(new WLength(350, WLength.Unit.Pixel), new WLength(80, WLength.Unit.Pixel));
         this.getDecorationStyle().setBackgroundColor(WColor.white);
-       // this.getDecorationStyle().setBorder(new WBorder(WBorder.Style.Solid, WBorder.Width.Thin, new WColor("#3399ff")), Side.All);
-        this.setAttributeValue("style","brackground-color: transparent;");
-       
+        // this.getDecorationStyle().setBorder(new WBorder(WBorder.Style.Solid, WBorder.Width.Thin, new WColor("#3399ff")), Side.All);
+        this.setAttributeValue("style", "brackground-color: transparent;");
+
         WHBoxLayout box = new WHBoxLayout(this);
         box.setContentsMargins(5, 5, 0, 5);
         box.setSpacing(5);
@@ -133,4 +137,10 @@ public class DMessagem extends WContainerWidget {
         timer.stop();
         this.getParent().removeChild(this);
     }
+
+    public Signal getSignalClosing() {
+        return signalClosing;
+    }
+    
+    
 }

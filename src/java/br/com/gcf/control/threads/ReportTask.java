@@ -5,13 +5,7 @@
  */
 package br.com.gcf.control.threads;
 
-import br.com.gcf.control.dao.Lote_DAO;
-import br.com.gcf.model.dto.Lote_DTO;
-import eu.webtoolkit.jwt.Signal1;
 import eu.webtoolkit.jwt.WApplication;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

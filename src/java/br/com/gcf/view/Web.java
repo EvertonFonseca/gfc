@@ -37,7 +37,7 @@ public class Web extends WContainerWidget implements Client {
     private String client;
     private WVBoxLayout box;
     public static Signal2<Integer, Integer> signalSize = new Signal2<>();
-    private static Usuario_DTO usuarioLogin = new Usuario_DTO();
+    private Usuario_DTO usuarioLogin;
     private WContainerWidget rootContainer;
     private String nome;
     public static WebMain webApp;
@@ -161,14 +161,14 @@ public class Web extends WContainerWidget implements Client {
 
     }
 
-    public void createMessageTemp(String message, String tipo) {
+    public DMessagem createMessageTemp(String message, String tipo) {
 
-        new DMessagem(message, tipo, this);
+        return new DMessagem(message, tipo, this);
     }
 
-    public void createMessageTemp(String message, String tipo, int delay) {
+    public DMessagem createMessageTemp(String message, String tipo, int delay) {
 
-        new DMessagem(message, tipo, delay, this);
+        return new DMessagem(message, tipo, delay, this);
     }
 
     private void importFile(WVBoxLayout boxV) {
@@ -319,8 +319,12 @@ public class Web extends WContainerWidget implements Client {
     /**
      * @return the usuarioLogin
      */
-    public static Usuario_DTO getUsuarioLogin() {
+    public Usuario_DTO getUsuarioLogin() {
         return usuarioLogin;
+    }
+
+    public void setUsuarioLogin(Usuario_DTO usuarioLogin) {
+        this.usuarioLogin = usuarioLogin;
     }
 
     /**

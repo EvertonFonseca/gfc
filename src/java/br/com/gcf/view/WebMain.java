@@ -5,6 +5,7 @@
  */
 package br.com.gcf.view;
 
+import br.com.gcf.control.dao.Usuario_DAO;
 import eu.webtoolkit.jwt.JSignal;
 import eu.webtoolkit.jwt.WApplication;
 import eu.webtoolkit.jwt.WEnvironment;
@@ -73,10 +74,17 @@ public class WebMain extends WApplication {
         
         this.onClosed = new JSignal(this, "Event closed window") {
         };
-        
+       
         this.onClosed.addListener(this,() -> {
         
+            //logout user if it sing in
+            if(this.web.getUsuarioLogin() != null){
+                
+                Usuario_DAO.updateAtivo(this.web.getUsuarioLogin().getId(),false);
+            }
+            
             System.out.println("Closing session: "+getSessionId());
+            Index.applications.remove(this);
             this.quit();
         });
 
@@ -90,6 +98,26 @@ public class WebMain extends WApplication {
                 + "window.onunload = function () {\n"
                 + this.onClosed.createCall() + "\n"
                 + "}");
+        
+        WApplication.getInstance().doJavaScript("var LocationBar = require(\"location-bar\");\n"
+                + "var locationBar = new LocationBar();\n"
+                + "\n"
+                + "// listen to all changes to the location bar\n"
+                + "locationBar.onChange(function (path) {\n"
+                + "  console.log(\"the current url is\", path);\n"
+                 + this.onClosed.createCall() + "\n"
+                + "});\n"
+                + "\n"
+                + "// listen to a specific change to location bar\n"
+                + "// e.g. Backbone builds on top of this method to implement\n"
+                + "// it's simple parametrized Backbone.Router\n"
+                + "locationBar.route(/some\\-regex/, function () {\n"
+                + "  // only called when the current url matches the regex\n"
+                + "});\n"
+                + "\n"
+                + "locationBar.start({\n"
+                + "  pushState: true\n"
+                + "});");
     }
 
     /**

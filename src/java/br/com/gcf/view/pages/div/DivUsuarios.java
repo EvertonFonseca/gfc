@@ -21,6 +21,7 @@ import br.com.gcf.model.components.table.VirtualModelUsuario;
 import br.com.gcf.model.dto.Usuario_DTO;
 import br.com.gcf.view.Web;
 import br.com.gcf.view.pages.div.dialog.DCLote;
+import br.com.gcf.view.pages.div.dialog.DCUsuarios;
 import eu.webtoolkit.jwt.AlignmentFlag;
 import eu.webtoolkit.jwt.JSignal;
 import eu.webtoolkit.jwt.Orientation;
@@ -44,11 +45,10 @@ import java.util.List;
  *
  * @author Windows
  */
-public class DivUsuarios extends WContainerWidget implements Signal1.Listener<String> {
+public class DivUsuarios extends WContainerWidget {
 
     private WVBoxLayout box;
     private WTemplate tempFlux;
-    public static Signal1<String> signalUsuarios;
     private List<Fazenda_DTO> listaLotes;
     private WContainerWidget divCenter;
     private WContainerWidget divMain;
@@ -56,7 +56,7 @@ public class DivUsuarios extends WContainerWidget implements Signal1.Listener<St
     private JSignal onclickedRight;
     private Web web;
     private WTableView tableView;
-    private DCLote dialogLote;
+    private DCUsuarios dialogUsuario;
 
     public DivUsuarios(Web web) {
 
@@ -78,22 +78,19 @@ public class DivUsuarios extends WContainerWidget implements Signal1.Listener<St
         this.divMain.setOverflow(Overflow.OverflowAuto, Orientation.Vertical);
 
         this.listaLotes = new LinkedList<>();
-        signalUsuarios = new Signal1<>();
         createControl();
         createTable();
 
         box.addWidget(divCenter, 0);
         box.addWidget(divMain, 1);
 
-        signalUsuarios.addListener(this, this);
-
     }
 
     @Override
     public void remove() {
-    
-        ((VirtualAbstractTableModel)this.tableView.getModel()).clear();
-         super.remove(); //To change body of generated methods, choose Tools | Templates.
+
+        ((VirtualAbstractTableModel) this.tableView.getModel()).clear();
+        super.remove(); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void createTable() {
@@ -110,6 +107,8 @@ public class DivUsuarios extends WContainerWidget implements Signal1.Listener<St
         tableView.setEditTriggers(EnumSet.of(WAbstractItemView.EditTrigger.NoEditTrigger));
         tableView.setColumnWidth(0, new WLength(100, WLength.Unit.Pixel));
         tableView.setColumnWidth(1, new WLength(200, WLength.Unit.Pixel));
+        tableView.setColumnWidth(4, new WLength(200, WLength.Unit.Pixel));
+        tableView.setColumnWidth(5, new WLength(80, WLength.Unit.Pixel));
         tableView.setAttributeValue("oncontextmenu", "event.cancelBubble = true; event.returnValue = false; return false;");
 
         String[] header = new String[]{
@@ -117,6 +116,8 @@ public class DivUsuarios extends WContainerWidget implements Signal1.Listener<St
             "Nome".toUpperCase(),
             "Categoria".toUpperCase(),
             "Data".toUpperCase(),
+            "Email".toUpperCase(),
+            "Status".toUpperCase(),
             "Editar".toUpperCase(),
             "Remover".toUpperCase()
         };
@@ -146,7 +147,7 @@ public class DivUsuarios extends WContainerWidget implements Signal1.Listener<St
             }
 
         }));
-        
+
         boxV.addWidget(tableView);
     }
 
@@ -160,23 +161,26 @@ public class DivUsuarios extends WContainerWidget implements Signal1.Listener<St
 
         WText labelFiltro = new WText("Filtro:");
         labelFiltro.setTextAlignment(AlignmentFlag.AlignMiddle);
-        
+
         EditLine textFiltro = new EditLine();
         textFiltro.setPlaceholderText("Filtrar por");
-        textFiltro.setMaximumSize(new WLength(250, WLength.Unit.Pixel),WLength.Auto);
-        
-        WTemplate btBuscar =  new WTemplate();
+        textFiltro.setMaximumSize(new WLength(250, WLength.Unit.Pixel), WLength.Auto);
+
+        WTemplate btBuscar = new WTemplate();
         btBuscar.setTemplateText("<button type=\"button\" class=\"btn btn-primary\">Filtrar</button>");
-        
+
         ComboBox<String> comboSelector = new ComboBox<>(
                 new String[]{
                     "Sem Filtro".toUpperCase(),
                     "Codigo".toUpperCase(),
                     "Nome".toUpperCase(),
                     "Categoria".toUpperCase(),
-                    "Data".toUpperCase()});
-        comboSelector.setMaximumSize(new WLength(150, WLength.Unit.Pixel),WLength.Auto);
-        
+                    "Data".toUpperCase(),
+                    "Email".toUpperCase(),
+                    "Status".toUpperCase()
+                });
+        comboSelector.setMaximumSize(new WLength(150, WLength.Unit.Pixel), WLength.Auto);
+
         Button btAdd = new Button("Adicionar", 10);
         btAdd.setIcon(new WLink("images/usuario/user.png"));
 
@@ -185,16 +189,23 @@ public class DivUsuarios extends WContainerWidget implements Signal1.Listener<St
 
         btAdd.setMaximumSize(new WLength(140, WLength.Unit.Pixel), new WLength(40, WLength.Unit.Pixel));
         btDeletar.setMaximumSize(new WLength(140, WLength.Unit.Pixel), new WLength(40, WLength.Unit.Pixel));
-      
+
         btAdd.clicked().addListener(btAdd, (mouse) -> {
 
-            if (dialogLote == null) {
+            if (dialogUsuario == null) {
 
-                this.dialogLote = new DCLote(web);
+                this.dialogUsuario = new DCUsuarios(web);
+                this.dialogUsuario.getSignalInsert().addListener(dialogUsuario, (arg) -> {
 
-                this.dialogLote.getSignalClose().addListener(this.dialogLote, () -> {
+                    //cleat table
+                    this.divMain.clear();
+                    this.createTable();
+                    this.web.createMessageTemp(arg, Web.Tipo_Mensagem.SUCESSO);
 
-                    this.dialogLote = null;
+                });
+                this.dialogUsuario.getSignalClose().addListener(this.dialogUsuario, () -> {
+
+                    this.dialogUsuario = null;
 
                 });
 
@@ -203,29 +214,20 @@ public class DivUsuarios extends WContainerWidget implements Signal1.Listener<St
         });
         btAdd.setAttributeValue("oncontextmenu", onclickedRight.createCall() + "\nevent.cancelBubble = true; event.returnValue = false; return false;");
 
-        boxh.addWidget(labelFiltro,0,AlignmentFlag.AlignMiddle);
-        boxh.addWidget(textFiltro,0,AlignmentFlag.AlignMiddle);
-        boxh.addWidget(btBuscar,0,AlignmentFlag.AlignMiddle);
-        boxh.addWidget(comboSelector,1,AlignmentFlag.AlignMiddle);
-        boxh.addWidget(btAdd, 0,AlignmentFlag.AlignMiddle,AlignmentFlag.AlignRight);
-        boxh.addWidget(btDeletar,0,AlignmentFlag.AlignMiddle,AlignmentFlag.AlignRight);
+        boxh.addWidget(labelFiltro, 0, AlignmentFlag.AlignMiddle);
+        boxh.addWidget(textFiltro, 0, AlignmentFlag.AlignMiddle);
+        boxh.addWidget(btBuscar, 0, AlignmentFlag.AlignMiddle);
+        boxh.addWidget(comboSelector, 1, AlignmentFlag.AlignMiddle);
+        boxh.addWidget(btAdd, 0, AlignmentFlag.AlignMiddle, AlignmentFlag.AlignRight);
+        boxh.addWidget(btDeletar, 0, AlignmentFlag.AlignMiddle, AlignmentFlag.AlignRight);
 
-    }
-
-    public void trigger(String arg) {
-
-        //cleat table
-        this.divMain.clear();
-        this.createTable();
-
-        this.web.createMessageTemp(arg, Web.Tipo_Mensagem.SUCESSO);
     }
 
     private void modelTable(String[] header, WTableView tableView, boolean isSorting, int index) {
 
         Signal1 signalUsuarios = new Signal1();
 
-        VirtualModelUsuario<Usuario_DTO> model = new VirtualModelUsuario<>(web,0, header, tableView);
+        VirtualModelUsuario<Usuario_DTO> model = new VirtualModelUsuario<>(web, 0, header, tableView);
         model.setIsSorting(isSorting);
         tableView.setModel(model);
 
@@ -256,15 +258,21 @@ public class DivUsuarios extends WContainerWidget implements Signal1.Listener<St
                                 model.insert(i, j, usuario.getNome());
                                 break;
                             case 2: // Categoria
-                                model.insert(i, j, usuario.getTipo());
+                                model.insert(i, j, usuario.getTipoCategoria().getNome());
                                 break;
                             case 3: // Data
-                                model.insert(i, j,usuario.getData());
+                                model.insert(i, j, usuario.getData());
                                 break;
-                            case 12: // editar
+                            case 4: // email
+                                model.insert(i, j, usuario.getEmail());
+                                break;
+                            case 5: // ativo
+                                model.insert(i, j, usuario.isAtivo() ? "Online" : "Offline");
+                                break;
+                            case 6: // editar
                                 model.insert(i, j, "");
                                 break;
-                            case 13: // remover
+                            case 7: // remover
                                 model.insert(i, j, "");
                                 break;
                         }
@@ -281,9 +289,9 @@ public class DivUsuarios extends WContainerWidget implements Signal1.Listener<St
 
         }));
 
-        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(),signalUsuarios) {
+        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(), signalUsuarios) {
             @Override
-            public void run(){
+            public void run() {
 
                 List<Usuario_DTO> usuarios = Usuario_DAO.readAllUsuarios();
 

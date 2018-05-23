@@ -23,6 +23,7 @@ import br.com.gcf.model.components.table.VirtualModelUsuario;
 import br.com.gcf.model.dto.TpUsuario_DTO;
 import br.com.gcf.model.dto.Usuario_DTO;
 import br.com.gcf.view.Web;
+import br.com.gcf.view.pages.div.dialog.DCCategoria;
 import br.com.gcf.view.pages.div.dialog.DCLote;
 import eu.webtoolkit.jwt.AlignmentFlag;
 import eu.webtoolkit.jwt.JSignal;
@@ -49,17 +50,13 @@ import java.util.List;
  */
 public class DivCategorias extends WContainerWidget implements Signal1.Listener<String> {
 
-    private WVBoxLayout box;
-    private WTemplate tempFlux;
-    public static Signal1<String> signalUsuarios;
-    private List<Fazenda_DTO> listaLotes;
+    public static Signal1<String> signalTpUser;
     private WContainerWidget divCenter;
     private WContainerWidget divMain;
-    private WVBoxLayout boxMain;
     private JSignal onclickedRight;
     private Web web;
     private WTableView tableView;
-    private DCLote dialogLote;
+    private DCCategoria dialogCategoria;
 
     public DivCategorias(Web web) {
 
@@ -80,15 +77,14 @@ public class DivCategorias extends WContainerWidget implements Signal1.Listener<
         this.divMain = new WContainerWidget();
         this.divMain.setOverflow(Overflow.OverflowAuto, Orientation.Vertical);
 
-        this.listaLotes = new LinkedList<>();
-        signalUsuarios = new Signal1<>();
+        signalTpUser = new Signal1<>();
         createControl();
         createTable();
 
         box.addWidget(divCenter, 0);
         box.addWidget(divMain, 1);
 
-        signalUsuarios.addListener(this, this);
+        signalTpUser.addListener(this, this);
 
     }
 
@@ -187,13 +183,13 @@ public class DivCategorias extends WContainerWidget implements Signal1.Listener<
       
         btAdd.clicked().addListener(btAdd, (mouse) -> {
 
-            if (dialogLote == null) {
+            if (dialogCategoria == null) {
 
-                this.dialogLote = new DCLote(web);
+                this.dialogCategoria = new DCCategoria(web);
 
-                this.dialogLote.getSignalClose().addListener(this.dialogLote, () -> {
+                this.dialogCategoria.getSignalClose().addListener(this.dialogCategoria, () -> {
 
-                    this.dialogLote = null;
+                    this.dialogCategoria = null;
 
                 });
 
@@ -222,7 +218,7 @@ public class DivCategorias extends WContainerWidget implements Signal1.Listener<
 
     private void modelTable(String[] header, WTableView tableView, boolean isSorting, int index) {
 
-        Signal1 signalUsuarios = new Signal1();
+        Signal1 signalTpUser = new Signal1();
 
         VirtualModelCategoria<TpUsuario_DTO> model = new VirtualModelCategoria<>(web,0, header, tableView);
         model.setIsSorting(isSorting);
@@ -230,7 +226,7 @@ public class DivCategorias extends WContainerWidget implements Signal1.Listener<
 
         Loader loader = new Loader(web);
 
-        signalUsuarios.addListener(this, ((arg) -> {
+        signalTpUser.addListener(this, ((arg) -> {
 
             List<TpUsuario_DTO> usuarios = (List<TpUsuario_DTO>) arg;
 
@@ -273,7 +269,7 @@ public class DivCategorias extends WContainerWidget implements Signal1.Listener<
 
         }));
 
-        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(),signalUsuarios) {
+        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(),signalTpUser) {
             @Override
             public void run(){
 

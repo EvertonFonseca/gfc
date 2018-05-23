@@ -9,6 +9,7 @@ import br.com.gcf.view.Web;
 import br.com.gcf.view.pages.PAdmin;
 import br.com.gcf.view.pages.div.DivAnimais;
 import br.com.gcf.view.pages.div.DivApartacao;
+import br.com.gcf.view.pages.div.DivCategorias;
 import br.com.gcf.view.pages.div.DivEstatistica;
 import br.com.gcf.view.pages.div.DivHome;
 import br.com.gcf.view.pages.div.DivFazendas;
@@ -173,12 +174,12 @@ public class ContentMain extends WContainerWidget implements Signal1.Listener<In
                 break;
             case Page.USUARIO_CATETORIA:
 
-                if (this.widgetSelected instanceof DivUsuarios) {
+                if (this.widgetSelected instanceof DivCategorias) {
                     break;
                 }
                 this.divMain.clear();
                 this.divMain.setOverflow(Overflow.OverflowHidden);
-                this.widgetSelected = new DivUsuarios(this.web);
+                this.widgetSelected = new DivCategorias(this.web);
                 this.divMain.addWidget(this.widgetSelected);
 
                 break;

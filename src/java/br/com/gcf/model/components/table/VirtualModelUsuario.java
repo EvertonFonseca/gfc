@@ -14,6 +14,7 @@ import eu.webtoolkit.jwt.AlignmentFlag;
 import eu.webtoolkit.jwt.Cursor;
 import eu.webtoolkit.jwt.ViewItemRenderFlag;
 import eu.webtoolkit.jwt.WAbstractItemDelegate;
+import eu.webtoolkit.jwt.WColor;
 import eu.webtoolkit.jwt.WContainerWidget;
 import eu.webtoolkit.jwt.WFont;
 import eu.webtoolkit.jwt.WImage;
@@ -138,6 +139,26 @@ public class VirtualModelUsuario<T> extends VirtualAbstractTableModel<T> {
             }
         });
 
+        getTable().setItemDelegateForColumn(getIndexColuna("Status"), new WAbstractItemDelegate() {
+            @Override
+            public WWidget update(WWidget widget, WModelIndex index, EnumSet<ViewItemRenderFlag> flags) {
+
+                WContainerWidget divImage = new WContainerWidget();
+                WVBoxLayout boxV = new WVBoxLayout(divImage);
+                boxV.setContentsMargins(0, 0, 0, 0);
+                divImage.resize(new WLength(100, WLength.Unit.Percentage), new WLength(100, WLength.Unit.Percentage));
+
+                WText btEdit = new WText(getData(index).toString());
+              
+                boolean status = ((Usuario_DTO)getTemplate(index.getRow())).isAtivo();
+                if(status)
+                divImage.getDecorationStyle().setBackgroundColor(WColor.green);
+                
+                boxV.addWidget(btEdit, 0,AlignmentFlag.AlignMiddle);
+
+                return divImage;
+            }
+        });
     }
 
 }

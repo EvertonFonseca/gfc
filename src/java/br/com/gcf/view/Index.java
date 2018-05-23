@@ -6,6 +6,7 @@
 package br.com.gcf.view;
 
 import br.com.gcf.control.CookieLogin;
+import br.com.gcf.control.dao.Usuario_DAO;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -82,6 +83,8 @@ public class Index extends WtServlet {
                 response.getOutputStream().flush();
             }
         },"/GCF/login/admin/input");
+        //desable all user to offline
+        Usuario_DAO.updateAllOffline();
     }
 
     public WApplication createApplication(WEnvironment env) {
@@ -132,6 +135,9 @@ public class Index extends WtServlet {
         WApplication.getInstance().require("assets/datepicker/js/bootstrap-datepicker.min.js");
         WApplication.getInstance().require("assets/datepicker/js/bootstrap-datepicker.pt-BR.min.js");
         
+        //Location bar
+        WApplication.getInstance().require("js/location-bar.js");
+        
         //MapBox
         WApplication.getInstance().require("https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js");
         WApplication.getInstance().useStyleSheet(new WLink("https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css"));
@@ -178,8 +184,8 @@ public class Index extends WtServlet {
 
             return true;
         } else {
-            app.quit();
             app.redirect("/GCF");
+            app.quit();
             return false;
         }
     }

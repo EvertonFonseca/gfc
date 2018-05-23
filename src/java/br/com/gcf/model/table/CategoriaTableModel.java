@@ -34,14 +34,9 @@ public class CategoriaTableModel {
 
     public static String insert() {
 
-        return "INSERT INTO public.usuarios(\n"
-                + "nome_usuario, "
-                + "data_usuario, "
-                + "id_alimento, "
-                 + "arroba_usuario, "
-                 + "carcaca_usuario"
-                + ") "
-                + "VALUES (?,?,?,?,?)";
+        return "INSERT INTO public.tipo_usuario(\n"
+                + "            nome_tp_usuario)\n"
+                + "    VALUES (?)";
     }
 
     public static String findName(String nameLote){

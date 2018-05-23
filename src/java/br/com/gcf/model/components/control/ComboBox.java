@@ -51,6 +51,19 @@ public class ComboBox<T> extends WComboBox {
         this.init();
     }
 
+    public void setListItens(List<T> lista) {
+
+        if (lista == null) {
+            return;
+        }
+        this.clear();
+        lista.stream().forEach((template) -> {
+            this.lista.add(template);
+            super.addItem(template.toString());
+        });
+
+    }
+
     private void init() {
 
         this.setAttributeValue("style", "border-radius: 2px;");

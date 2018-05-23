@@ -5,12 +5,11 @@
  */
 package br.com.gcf.model.components.dialog;
 
-import br.com.gcf.model.components.control.Button;
 import eu.webtoolkit.jwt.Cursor;
 import eu.webtoolkit.jwt.PositionScheme;
 import eu.webtoolkit.jwt.Side;
 import eu.webtoolkit.jwt.Signal;
-import eu.webtoolkit.jwt.WColor;
+import eu.webtoolkit.jwt.Signal1;
 import eu.webtoolkit.jwt.WContainerWidget;
 import eu.webtoolkit.jwt.WDialog;
 import eu.webtoolkit.jwt.WLength;
@@ -23,10 +22,12 @@ import eu.webtoolkit.jwt.WText;
 public abstract class DialogAbstracao extends WDialog {
 
     private Signal signalClose;
+    private Signal1<String> signalInsert;
 
     public DialogAbstracao() {
 
         this.signalClose = new Signal(this);
+        this.signalInsert = new Signal1(this);
 
         WContainerWidget titleDiv = getTitleBar();
         titleDiv.setPositionScheme(PositionScheme.Relative);
@@ -55,6 +56,7 @@ public abstract class DialogAbstracao extends WDialog {
     public DialogAbstracao(String titule) {
         super(titule);
         this.signalClose = new Signal(this);
+        this.signalInsert = new Signal1(this);
 
         WContainerWidget titleDiv = getTitleBar();
         titleDiv.setPositionScheme(PositionScheme.Relative);
@@ -100,4 +102,13 @@ public abstract class DialogAbstracao extends WDialog {
     public Signal getSignalClose() {
         return signalClose;
     }
+
+    /**
+     * @return the signalInsert
+     */
+    public Signal1<String> getSignalInsert() {
+        return signalInsert;
+    }
+    
+    
 }

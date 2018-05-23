@@ -122,4 +122,36 @@ public class TpUsuario_DAO {
         }
         return status;
     }
+
+   public static boolean insert(TpUsuario_DTO tpUsuario) {
+
+        boolean status = true;
+        Database database = new Database();
+
+        PreparedStatement st = database.getStatement(CategoriaTableModel.insert());
+
+        try {
+
+            database.getConn().setAutoCommit(false);
+
+            st.setString(1, tpUsuario.getNome());
+            st.executeUpdate();
+
+            database.getConn().commit();
+
+        } catch (SQLException ex) {
+            status = false;
+            try {
+                database.getConn().rollback();
+            } catch (SQLException ex1) {
+                ex1.printStackTrace();
+            }
+            ex.printStackTrace();
+
+        } finally {
+
+            database.close();
+        }
+        return status;
+    }
 }

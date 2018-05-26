@@ -88,8 +88,7 @@ public class DCLote extends DialogAbstracao {
             
             if (Lote_DAO.insert(lote)) {
                 
-                DivLotes.signalLotes.trigger("Lote inserido com sucesso!");
-                
+                getSignalInsert().trigger("Lote inserido com sucesso!");
             }
             reject();
         });
@@ -116,7 +115,14 @@ public class DCLote extends DialogAbstracao {
 
         btAddRacao.clicked().addListener(this, (mouse) -> {
 
+            DCRacao dc = new DCRacao(web);
+            dc.getSignalInsert().addListener(dc, (arg) -> {
 
+                //cleat table
+                this.comboRacao.setListItens(Alimento_DAO.readAllAlimentos());
+                this.web.createMessageTemp(arg, Web.Tipo_Mensagem.SUCESSO);
+
+            });
         });
 
         this.comboRacao   = new ComboBox(Alimento_DAO.readAllAlimentos());

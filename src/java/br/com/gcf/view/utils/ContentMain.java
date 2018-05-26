@@ -14,6 +14,7 @@ import br.com.gcf.view.pages.div.DivEstatistica;
 import br.com.gcf.view.pages.div.DivHome;
 import br.com.gcf.view.pages.div.DivFazendas;
 import br.com.gcf.view.pages.div.DivLotes;
+import br.com.gcf.view.pages.div.DivRacao;
 import br.com.gcf.view.pages.div.DivUsuarios;
 import br.com.gcf.view.utils.MenuBar.Page;
 import eu.webtoolkit.jwt.Orientation;
@@ -121,6 +122,17 @@ public class ContentMain extends WContainerWidget implements Signal1.Listener<In
                 this.divMain.clear();
                 this.divMain.setOverflow(Overflow.OverflowHidden);
                 this.widgetSelected = new DivApartacao(web);
+                this.divMain.addWidget(this.widgetSelected);
+
+                break;
+            case Page.RACAO:
+
+                if (this.widgetSelected instanceof DivRacao) {
+                    break;
+                }
+                this.divMain.clear();
+                this.divMain.setOverflow(Overflow.OverflowHidden);
+                this.widgetSelected = new DivRacao(web);
                 this.divMain.addWidget(this.widgetSelected);
 
                 break;

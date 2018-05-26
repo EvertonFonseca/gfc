@@ -66,10 +66,10 @@ public class MenuDown extends WContainerWidget {
             boxH.setSpacing(10);
        
             WText iconeMenu = new WText(icone);
-            iconeMenu.getDecorationStyle().getFont().setSize(new WLength(16, WLength.Unit.Pixel));
+            iconeMenu.getDecorationStyle().getFont().setSize(new WLength(14, WLength.Unit.Pixel));
             
             WText textMenu = new WText(texto);
-            textMenu.getDecorationStyle().getFont().setSize(new WLength(15, WLength.Unit.Pixel));
+            textMenu.getDecorationStyle().getFont().setSize(new WLength(13, WLength.Unit.Pixel));
 
             boxH.addWidget(iconeMenu,0,AlignmentFlag.AlignMiddle);
             boxH.addWidget(textMenu,1,AlignmentFlag.AlignMiddle);

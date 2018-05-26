@@ -56,6 +56,7 @@ public class MenuBar extends WContainerWidget {
         public static int USUARIO_CATETORIA = 0x08;
         public static int USUARIO_USUARIOS = 0x09;
         public static int USUARIO_PERFIL = 0x0A;
+        public static int RACAO = 0x0B;
     }
 
     public MenuBar(PAdmin pgAdmin) {
@@ -80,6 +81,7 @@ public class MenuBar extends WContainerWidget {
         MapaLista<String, String> map = new MapaLista<>();
         map.put("<span class=\"lnr lnr-home\"></span> ", "<span>Lotes</span>");
         map.put("<span class=\"lnr lnr-book\"></span> ", "<span>Histórico</span>");
+        map.put("<span class=\"lnr lnr-leaf\"></span> ", "<span>Ração</span>");
         this.textLotes = new MenuDown("<i class=\"lnr lnr-laptop\"></i><span>Fazenda</span>", map);
 
         List<WContainerWidget> loteDown = this.textLotes.getListDivDown();
@@ -96,12 +98,15 @@ public class MenuBar extends WContainerWidget {
         mapUser.put("<span class=\"lnr lnr-users\"></span> ", "<span>Usuários</span>");
         mapUser.put("<span class=\"lnr lnr-users\"></span> ", "<span>Categorias</span>");
         mapUser.put("<span class=\"lnr lnr-envelope\"></span> ", "<span>Mensagens</span>");
+        mapUser.put("<span class=\"lnr lnr-exit\"></span> ", "<span>Logout</span>");
         this.textUser = new MenuDown("<i class=\"lnr lnr-user\"></i> <span>Perfil</span>", mapUser);
         List<WContainerWidget> userDown = this.textUser.getListDivDown();
+        
+        loteDown.get(0).setToolTip("Abrir menu de Lotes");
 
         //tooltip
         this.textHome.setToolTip("Abrir menu de Controle");
-        this.textLotes.setToolTip("Abrir menu de Lotes");
+        this.textLotes.setToolTip("Abrir menus");
         this.textApartacao.setToolTip("Abrir menu de Apartações");
         this.textAnimais.setToolTip("Abrir menu de Animais");
         this.textEstatistica.setToolTip("Abrir menu de Estatística");
@@ -136,7 +141,10 @@ public class MenuBar extends WContainerWidget {
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextLotes());
             signalMenuEvent.trigger(Page.LOTES);
         });
-
+        loteDown.get(2).clicked().addListener(this, (mouse) -> {
+            this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextLotes());
+            signalMenuEvent.trigger(Page.RACAO);
+        });
         getTextApartacao().clicked().addListener(this, (mouse) -> {
             changeSelectedColor("idApartacao");
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextApartacao());
@@ -177,6 +185,9 @@ public class MenuBar extends WContainerWidget {
         userDown.get(2).clicked().addListener(this, (mouse) -> {
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextUser());
             signalMenuEvent.trigger(Page.USUARIO_CATETORIA);
+        });
+        userDown.get(4).clicked().addListener(this, (mouse) -> {
+            this.pgAdmin.logout();
         });
                 
         //init a selection at home

@@ -5,6 +5,7 @@
  */
 package br.com.gcf.view.pages.div;
 
+import br.com.gcf.control.dao.Alimento_DAO;
 import br.com.gcf.model.dto.Fazenda_DTO;
 import br.com.gcf.control.dao.Lote_DAO;
 import br.com.gcf.control.dao.Usuario_DAO;
@@ -17,11 +18,13 @@ import br.com.gcf.model.components.control.EditLine;
 import br.com.gcf.model.components.dialog.Loader;
 import br.com.gcf.model.components.table.VirtualAbstractTableModel;
 import br.com.gcf.model.components.table.VirtualModelLotes;
+import br.com.gcf.model.components.table.VirtualModelRacao;
 import br.com.gcf.model.components.table.VirtualModelUsuario;
-import br.com.gcf.model.dto.Usuario_DTO;
+import br.com.gcf.model.dto.Alimento_DTO;
+import br.com.gcf.model.dto.Alimento_DTO;
 import br.com.gcf.view.Web;
 import br.com.gcf.view.pages.div.dialog.DCLote;
-import br.com.gcf.view.pages.div.dialog.DCUsuarios;
+import br.com.gcf.view.pages.div.dialog.DCRacao;
 import eu.webtoolkit.jwt.AlignmentFlag;
 import eu.webtoolkit.jwt.JSignal;
 import eu.webtoolkit.jwt.Orientation;
@@ -45,7 +48,7 @@ import java.util.List;
  *
  * @author Windows
  */
-public class DivUsuarios extends WContainerWidget {
+public class DivRacao extends WContainerWidget {
 
     private WVBoxLayout box;
     private WTemplate tempFlux;
@@ -56,9 +59,9 @@ public class DivUsuarios extends WContainerWidget {
     private JSignal onclickedRight;
     private Web web;
     private WTableView tableView;
-    private DCUsuarios dialogUsuario;
+    private DCRacao dialogRacao;
 
-    public DivUsuarios(Web web) {
+    public DivRacao(Web web) {
 
         this.resize(new WLength(100, WLength.Unit.Percentage), new WLength(100, WLength.Unit.Percentage));
         this.web = web;
@@ -107,16 +110,13 @@ public class DivUsuarios extends WContainerWidget {
         tableView.setEditTriggers(EnumSet.of(WAbstractItemView.EditTrigger.NoEditTrigger));
         tableView.setColumnWidth(0, new WLength(100, WLength.Unit.Pixel));
         tableView.setColumnWidth(1, new WLength(200, WLength.Unit.Pixel));
-        tableView.setColumnWidth(4, new WLength(200, WLength.Unit.Pixel));
-        tableView.setColumnWidth(5, new WLength(80, WLength.Unit.Pixel));
+        tableView.setColumnWidth(1, new WLength(250, WLength.Unit.Pixel));
         tableView.setAttributeValue("oncontextmenu", "event.cancelBubble = true; event.returnValue = false; return false;");
 
         String[] header = new String[]{
             "Codigo".toUpperCase(),
             "Nome".toUpperCase(),
-            "Categoria".toUpperCase(),
-            "Data".toUpperCase(),
-            "Email".toUpperCase(),
+            "Receitas".toUpperCase(),
             "Status".toUpperCase(),
             "Editar".toUpperCase(),
             "Remover".toUpperCase()
@@ -174,28 +174,27 @@ public class DivUsuarios extends WContainerWidget {
                     "Sem Filtro".toUpperCase(),
                     "Codigo".toUpperCase(),
                     "Nome".toUpperCase(),
-                    "Categoria".toUpperCase(),
-                    "Data".toUpperCase(),
-                    "Email".toUpperCase(),
-                    "Status".toUpperCase()
-                });
+                    "Receitas".toUpperCase(),
+                    "Status".toUpperCase()});
+        
         comboSelector.setMaximumSize(new WLength(150, WLength.Unit.Pixel), WLength.Auto);
 
         Button btAdd = new Button("Adicionar", 10);
-        btAdd.setIcon(new WLink("images/usuario/user.png"));
+        btAdd.setIcon(new WLink("images/racao/alimento.png"));
 
         Button btDeletar = new Button("Limpar", 10);
         btDeletar.setIcon(new WLink("images/fazenda/lixo.png"));
 
         btAdd.setMaximumSize(new WLength(140, WLength.Unit.Pixel), new WLength(40, WLength.Unit.Pixel));
+        btAdd.setMinimumSize(new WLength(140, WLength.Unit.Pixel), new WLength(40, WLength.Unit.Pixel));
         btDeletar.setMaximumSize(new WLength(140, WLength.Unit.Pixel), new WLength(40, WLength.Unit.Pixel));
 
         btAdd.clicked().addListener(btAdd, (mouse) -> {
 
-            if (dialogUsuario == null) {
+            if (dialogRacao == null) {
 
-                this.dialogUsuario = new DCUsuarios(web);
-                this.dialogUsuario.getSignalInsert().addListener(dialogUsuario, (arg) -> {
+                this.dialogRacao = new DCRacao(web);
+                this.dialogRacao.getSignalInsert().addListener(dialogRacao, (arg) -> {
 
                     //cleat table
                     this.divMain.clear();
@@ -203,9 +202,9 @@ public class DivUsuarios extends WContainerWidget {
                     this.web.createMessageTemp(arg, Web.Tipo_Mensagem.SUCESSO);
 
                 });
-                this.dialogUsuario.getSignalClose().addListener(this.dialogUsuario, () -> {
+                this.dialogRacao.getSignalClose().addListener(this.dialogRacao, () -> {
 
-                    this.dialogUsuario = null;
+                    this.dialogRacao = null;
 
                 });
 
@@ -225,54 +224,48 @@ public class DivUsuarios extends WContainerWidget {
 
     private void modelTable(String[] header, WTableView tableView, boolean isSorting, int index) {
 
-        Signal1 signalUsuarios = new Signal1();
+        Signal1 signalRacoes = new Signal1();
 
-        VirtualModelUsuario<Usuario_DTO> model = new VirtualModelUsuario<>(web, 0, header, tableView);
+        VirtualModelRacao<Alimento_DTO> model = new VirtualModelRacao<>(web, 0, header, tableView);
         model.setIsSorting(isSorting);
         tableView.setModel(model);
 
         Loader loader = new Loader(web);
 
-        signalUsuarios.addListener(this, ((arg) -> {
+        signalRacoes.addListener(this, ((arg) -> {
 
-            List<Usuario_DTO> usuarios = (List<Usuario_DTO>) arg;
+            List<Alimento_DTO> racaos = (List<Alimento_DTO>) arg;
 
-            if (usuarios == null) {
+            if (racaos == null) {
                 return;
             }
             try {
 
-                for (int i = 0; i < usuarios.size(); i++) {
+                for (int i = 0; i < racaos.size(); i++) {
 
-                    Usuario_DTO usuario = usuarios.get(i);
-                    model.addTemplate(i, usuario);
+                    Alimento_DTO racao = racaos.get(i);
+                    model.addTemplate(i, racao);
 
                     for (int j = 0; j < header.length; j++) {
 
                         switch (j) {
 
                             case 0: // codigo
-                                model.insert(i, j, String.valueOf(usuario.getId()));
+                                model.insert(i, j, String.valueOf(racao.getId()));
                                 break;
                             case 1: // nome
-                                model.insert(i, j, usuario.getNome());
+                                model.insert(i, j, racao.getNome());
                                 break;
-                            case 2: // Categoria
-                                model.insert(i, j, usuario.getTipoCategoria().getNome());
+                            case 2: // mistura
+                                model.insert(i, j,racao.getMistura());
                                 break;
-                            case 3: // Data
-                                model.insert(i, j, usuario.getData());
+                            case 3: // ativo
+                                model.insert(i, j, racao.isAtivo() ? "Ativo" : "Desativado");
                                 break;
-                            case 4: // email
-                                model.insert(i, j, usuario.getEmail());
-                                break;
-                            case 5: // ativo
-                                model.insert(i, j, usuario.isAtivo() ? "Online" : "Offline");
-                                break;
-                            case 6: // editar
+                            case 4: // editar
                                 model.insert(i, j, "");
                                 break;
-                            case 7: // remover
+                            case 5: // remover
                                 model.insert(i, j, "");
                                 break;
                         }
@@ -289,15 +282,15 @@ public class DivUsuarios extends WContainerWidget {
 
         }));
 
-        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(), signalUsuarios) {
+        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(), signalRacoes) {
             @Override
             public void run() {
 
-                List<Usuario_DTO> usuarios = Usuario_DAO.readAllUsuarios();
+                List<Alimento_DTO> racaos = Alimento_DAO.readAllAlimentos();
 
                 this.beginLock();
 
-                signal.trigger(usuarios);
+                signal.trigger(racaos);
 
                 this.endLock();
             }

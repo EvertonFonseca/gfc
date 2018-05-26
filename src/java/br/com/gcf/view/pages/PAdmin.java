@@ -5,6 +5,7 @@
  */
 package br.com.gcf.view.pages;
 
+import br.com.gcf.control.dao.Usuario_DAO;
 import br.com.gcf.view.Web;
 import br.com.gcf.view.utils.ContentMain;
 import br.com.gcf.view.utils.MenuBar;
@@ -97,9 +98,12 @@ public class PAdmin extends WContainerWidget {
     
     public void logout(){
         
-         this.remove();
-        // WApplication.getInstance().redirect("/GCF");
-         WApplication.getInstance().setInternalPath("/", true);
+        this.remove();
+        if (this.web.getUsuarioLogin() != null) {
+
+            Usuario_DAO.updateAtivo(this.web.getUsuarioLogin().getId(), false);
+        }
+        WApplication.getInstance().setInternalPath("/", true);
         
     }
     

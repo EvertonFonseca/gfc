@@ -57,7 +57,7 @@ body{
     top:  25px;
     right: 10px;
     border-radius: 20px;
-    z-index: 99999;
+    z-index: 999999999;
 }
 .Wt-Loading{
     

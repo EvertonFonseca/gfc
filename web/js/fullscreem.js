@@ -1,4 +1,3 @@
-//helper function
 function fullScreen(element) {
   if(element.requestFullScreen) {
     element.requestFullScreen();
@@ -9,3 +8,12 @@ function fullScreen(element) {
   }
 }
 
+function fullScreenCancel() {
+  if(document.requestFullScreen) {
+    document.requestFullScreen();
+  } else if(document .webkitRequestFullScreen ) {
+    document.webkitRequestFullScreen();
+  } else if(document .mozRequestFullScreen) {
+    document.mozRequestFullScreen();
+  }
+}

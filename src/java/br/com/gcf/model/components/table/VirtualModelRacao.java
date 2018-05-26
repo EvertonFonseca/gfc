@@ -6,6 +6,8 @@
 package br.com.gcf.model.components.table;
 
 import br.com.gcf.control.dao.Usuario_DAO;
+import br.com.gcf.model.components.control.TextMenu;
+import br.com.gcf.model.dto.Alimento_DTO;
 import br.com.gcf.model.dto.Usuario_DTO;
 import br.com.gcf.view.Web;
 import br.com.gcf.view.pages.div.dialog.DEUsuario;
@@ -25,16 +27,17 @@ import eu.webtoolkit.jwt.WText;
 import eu.webtoolkit.jwt.WVBoxLayout;
 import eu.webtoolkit.jwt.WWidget;
 import java.util.EnumSet;
+import java.util.HashMap;
 
 /**
  *
  * @author Windows
  */
-public class VirtualModelUsuario<T> extends VirtualAbstractTableModel<T> {
+public class VirtualModelRacao<T> extends VirtualAbstractTableModel<T> {
 
     private DEUsuario dialogDEUsuario;
     
-    public VirtualModelUsuario(Web web, int row, String[] names, WTableView parent) {
+    public VirtualModelRacao(Web web, int row, String[] names, WTableView parent) {
         super(web, row, names, parent);
         this.configDelegate();
     }
@@ -139,7 +142,7 @@ public class VirtualModelUsuario<T> extends VirtualAbstractTableModel<T> {
             }
         });
 
-        getTable().setItemDelegateForColumn(getIndexColuna("Status"), new WAbstractItemDelegate() {
+        getTable().setItemDelegateForColumn(getIndexColuna("Receitas"), new WAbstractItemDelegate() {
             @Override
             public WWidget update(WWidget widget, WModelIndex index, EnumSet<ViewItemRenderFlag> flags) {
 
@@ -147,14 +150,17 @@ public class VirtualModelUsuario<T> extends VirtualAbstractTableModel<T> {
                 WVBoxLayout boxV = new WVBoxLayout(divImage);
                 boxV.setContentsMargins(0, 0, 0, 0);
                 divImage.resize(new WLength(100, WLength.Unit.Percentage), new WLength(100, WLength.Unit.Percentage));
-
-                WText btEdit = new WText(getData(index).toString());
-              
-                boolean status = ((Usuario_DTO)getTemplate(index.getRow())).isAtivo();
-                if(status)
-                divImage.getDecorationStyle().setBackgroundColor(WColor.green);
                 
-                boxV.addWidget(btEdit, 0,AlignmentFlag.AlignMiddle);
+                TextMenu textMenu = new TextMenu(getData(index).toString());
+                textMenu.setPaddingChilds(5);
+                Alimento_DTO alimento = (Alimento_DTO) getTemplate(index.getRow());
+                HashMap<String, String> map = alimento.getReceitas();
+
+                map.forEach((nome, valor) -> {
+                    textMenu.addMenu(nome + ": " + valor);
+                });
+
+                boxV.addWidget(textMenu, 0,AlignmentFlag.AlignMiddle);
 
                 return divImage;
             }

@@ -41,7 +41,7 @@ import java.util.List;
  *
  * @author Windows
  */
-public class DivLotes extends WContainerWidget implements Signal1.Listener<String> {
+public class DivLotes extends WContainerWidget {
 
     private WVBoxLayout box;
     private WTemplate tempFlux;
@@ -75,14 +75,11 @@ public class DivLotes extends WContainerWidget implements Signal1.Listener<Strin
         this.divMain.setOverflow(Overflow.OverflowAuto, Orientation.Vertical);
 
         this.listaLotes = new LinkedList<>();
-        signalLotes = new Signal1<>();
         createControl();
         createTable();
 
         box.addWidget(divCenter, 0);
         box.addWidget(divMain, 1);
-
-        signalLotes.addListener(this, this);
 
     }
 
@@ -205,6 +202,15 @@ public class DivLotes extends WContainerWidget implements Signal1.Listener<Strin
 
                 this.dialogLote = new DCLote(web);
 
+                this.dialogLote.getSignalInsert().addListener(dialogLote, (arg) -> {
+
+                    //cleat table
+                    this.divMain.clear();
+                    this.createTable();
+
+                    this.web.createMessageTemp(arg, Web.Tipo_Mensagem.SUCESSO);
+                });
+                
                 this.dialogLote.getSignalClose().addListener(this.dialogLote, () -> {
 
                     this.dialogLote = null;
@@ -223,15 +229,6 @@ public class DivLotes extends WContainerWidget implements Signal1.Listener<Strin
         boxh.addWidget(btAdd, 0,AlignmentFlag.AlignMiddle,AlignmentFlag.AlignRight);
         boxh.addWidget(btDeletar,0,AlignmentFlag.AlignMiddle,AlignmentFlag.AlignRight);
 
-    }
-
-    public void trigger(String arg) {
-
-        //cleat table
-        this.divMain.clear();
-        this.createTable();
-
-        this.web.createMessageTemp(arg, Web.Tipo_Mensagem.SUCESSO);
     }
 
     private void modelTable(String[] header, WTableView tableView, boolean isSorting, int index) {

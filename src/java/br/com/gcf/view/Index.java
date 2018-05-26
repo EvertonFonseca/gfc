@@ -84,7 +84,7 @@ public class Index extends WtServlet {
             }
         },"/GCF/login/admin/input");
         //desable all user to offline
-        Usuario_DAO.updateAllOffline();
+        Usuario_DAO.updateAllOffline(); 
     }
 
     public WApplication createApplication(WEnvironment env) {
@@ -129,6 +129,9 @@ public class Index extends WtServlet {
         WApplication.getInstance().useStyleSheet(new WLink("assets/vendor/linearicons/style.css"));
         WApplication.getInstance().useStyleSheet(new WLink("assets/vendor/chartist/css/chartist-custom.css"));
 
+        //Fullscreen
+        WApplication.getInstance().require("js/fullscreem.js");
+        
         //Datepicker
         WApplication.getInstance().require("assets/datepicker/js/jquery.js");
         WApplication.getInstance().useStyleSheet(new WLink("assets/datepicker/css/bootstrap-datepicker3.css"));
@@ -139,9 +142,9 @@ public class Index extends WtServlet {
         WApplication.getInstance().require("js/location-bar.js");
         
         //MapBox
-        WApplication.getInstance().require("https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js");
-        WApplication.getInstance().useStyleSheet(new WLink("https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css"));
-        WApplication.getInstance().useStyleSheet(new WLink("style/mapbox.css"));
+//        WApplication.getInstance().require("https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js");
+//        WApplication.getInstance().useStyleSheet(new WLink("https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css"));
+//        WApplication.getInstance().useStyleSheet(new WLink("style/mapbox.css"));
         
         //js
         WApplication.getInstance().require("assets/vendor/bootstrap/js/bootstrap.js");

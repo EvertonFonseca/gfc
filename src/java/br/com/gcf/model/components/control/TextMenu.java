@@ -27,6 +27,7 @@ public class TextMenu extends WText {
     private WVBoxLayout boxV;
     private JSignal signalClosePopup;
     private boolean closePoupActive;
+    private double paddingChilds = 12;
 
     public TextMenu() {
 
@@ -63,6 +64,7 @@ public class TextMenu extends WText {
              timer.setInterval(100);
              timer.start();
         });
+        
         this.contentMenu = new WContainerWidget();
         this.contentMenu.setCanReceiveFocus(true);
         this.contentMenu.setAttributeValue("style","outline: none;");
@@ -117,7 +119,7 @@ public class TextMenu extends WText {
     public WText addMenu(String text) {
 
         WText menuChild = new WText(text);
-        menuChild.setPadding(new WLength(12, WLength.Unit.Pixel));
+        menuChild.setPadding(new WLength(this.paddingChilds, WLength.Unit.Pixel));
         menuChild.getDecorationStyle().getFont().setSize(new WLength(15, WLength.Unit.Pixel));
         
         menuChild.mouseWentOver().addListener(menuChild, (arg) -> {
@@ -146,4 +148,12 @@ public class TextMenu extends WText {
         this.contentMenu.setFocus();
     }
 
+    public void setPaddingChilds(double paddingChilds) {
+        this.paddingChilds = paddingChilds;
+    }
+
+    public double getPaddingChilds() {
+        return paddingChilds;
+    }
+   
 }

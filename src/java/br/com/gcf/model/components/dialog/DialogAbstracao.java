@@ -26,6 +26,8 @@ public abstract class DialogAbstracao extends WDialog {
 
     public DialogAbstracao() {
 
+        
+        this.getTitleBar().setMaximumSize(WLength.Auto, new WLength(50, WLength.Unit.Pixel));
         this.signalClose = new Signal(this);
         this.signalInsert = new Signal1(this);
 
@@ -55,6 +57,8 @@ public abstract class DialogAbstracao extends WDialog {
 
     public DialogAbstracao(String titule) {
         super(titule);
+        
+        this.getTitleBar().setMaximumSize(WLength.Auto, new WLength(50, WLength.Unit.Pixel));
         this.signalClose = new Signal(this);
         this.signalInsert = new Signal1(this);
 

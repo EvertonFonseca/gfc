@@ -28,6 +28,7 @@ public class TextMenu extends WText {
     private JSignal signalClosePopup;
     private boolean closePoupActive;
     private double paddingChilds = 12;
+    private boolean activeDoubleClick = false;
 
     public TextMenu() {
 
@@ -40,9 +41,29 @@ public class TextMenu extends WText {
         this.init();
     }
 
+    public TextMenu(boolean activeDoubleClick) {
+
+        this.activeDoubleClick = activeDoubleClick;
+        this.init();
+    }
+
+    public TextMenu(String text, boolean activeDoubleClick) {
+        super(text);
+
+        this.activeDoubleClick = activeDoubleClick;
+        this.init();
+    }
+
     public TextMenu(String text, WContainerWidget parent) {
         super(text, parent);
 
+        this.init();
+    }
+
+    public TextMenu(String text, WContainerWidget parent, boolean activeDoubleClick) {
+        super(text, parent);
+
+        this.activeDoubleClick = activeDoubleClick;
         this.init();
     }
 
@@ -51,58 +72,56 @@ public class TextMenu extends WText {
         this.isPopupVisible = false;
         this.closePoupActive = false;
         this.setCanReceiveFocus(true);
-        this.signalClosePopup = new JSignal(this,"Signal close popup"){};
-        this.signalClosePopup.addListener(this,() -> {
-        
-             this.isPopupVisible = false;
-             this.hidePopup();
-             this.closePoupActive = true;
-             
-             WTimer timer = new WTimer();
-             timer.setSingleShot(true);
-             timer.timeout().addListener(timer,() -> {  this.closePoupActive = false;});
-             timer.setInterval(100);
-             timer.start();
+        this.signalClosePopup = new JSignal(this, "Signal close popup") {
+        };
+        this.signalClosePopup.addListener(this, () -> {
+
+            this.isPopupVisible = false;
+            this.hidePopup();
+            this.closePoupActive = true;
+
+            WTimer timer = new WTimer();
+            timer.setSingleShot(true);
+            timer.timeout().addListener(timer, () -> {
+                this.closePoupActive = false;
+            });
+            timer.setInterval(100);
+            timer.start();
         });
-        
+
         this.contentMenu = new WContainerWidget();
         this.contentMenu.setCanReceiveFocus(true);
-        this.contentMenu.setAttributeValue("style","outline: none;");
-        this.contentMenu.blurred().addListener(contentMenu,() -> {
-            
+        this.contentMenu.setAttributeValue("style", "outline: none;");
+        this.contentMenu.blurred().addListener(contentMenu, () -> {
+
             if (this.isPopupVisible) {
                 this.signalClosePopup.trigger();
             }
-        
+
         });
 
         this.boxV = new WVBoxLayout(this.contentMenu);
         this.boxV.setSpacing(15);
         this.boxV.setContentsMargins(5, 5, 5, 5);
-        
+
         this.popupWidget = new WPopupWidget(this.contentMenu);
         this.popupWidget.setAnchorWidget(this);
-        
-        this.clicked().addListener(this,(event) -> {
-           
-            if (this.closePoupActive) {
 
-                this.closePoupActive = false;
-                return;
-            }
+        if (!this.activeDoubleClick) {
 
-            this.isPopupVisible = !isPopupVisible;
+            this.clicked().addListener(this, (event) -> {
+                this.event();
+            });
 
-            if (this.isPopupVisible) {
-                this.showPopup();
-            } else {
-                this.hidePopup();
-            }
-        });
-        
+        } else {
+            this.doubleClicked().addListener(this, (event) -> {
+                this.event();
+            });
+        }
+
         WTimer timer = new WTimer();
         timer.setInterval(100);
-        timer.timeout().addListener(timer,() -> {
+        timer.timeout().addListener(timer, () -> {
 
             this.isPopupVisible = !isPopupVisible;
 
@@ -121,7 +140,7 @@ public class TextMenu extends WText {
         WText menuChild = new WText(text);
         menuChild.setPadding(new WLength(this.paddingChilds, WLength.Unit.Pixel));
         menuChild.getDecorationStyle().getFont().setSize(new WLength(15, WLength.Unit.Pixel));
-        
+
         menuChild.mouseWentOver().addListener(menuChild, (arg) -> {
             menuChild.getDecorationStyle().setForegroundColor(new WColor("#00ccff"));
             menuChild.getDecorationStyle().setCursor(Cursor.PointingHandCursor);
@@ -155,5 +174,21 @@ public class TextMenu extends WText {
     public double getPaddingChilds() {
         return paddingChilds;
     }
-   
+
+    private void event() {
+
+        if (this.closePoupActive) {
+
+            this.closePoupActive = false;
+            return;
+        }
+
+        this.isPopupVisible = !isPopupVisible;
+
+        if (this.isPopupVisible) {
+            this.showPopup();
+        } else {
+            this.hidePopup();
+        }
+    }
 }

@@ -80,14 +80,14 @@ public class MenuBar extends WContainerWidget {
 
         MapaLista<String, String> map = new MapaLista<>();
         map.put("<span class=\"lnr lnr-home\"></span> ", "<span>Lotes</span>");
+        map.put("<span class=\"fa fa-sitemap\"></span> ", "<span>Apartações</span>");
+        map.put("<span class=\"fa fa-paw\"></span> ", "<span>Animais</span>");
         map.put("<span class=\"lnr lnr-book\"></span> ", "<span>Histórico</span>");
         map.put("<span class=\"lnr lnr-leaf\"></span> ", "<span>Ração</span>");
         this.textLotes = new MenuDown("<i class=\"lnr lnr-laptop\"></i><span>Fazenda</span>", map);
 
         List<WContainerWidget> loteDown = this.textLotes.getListDivDown();
 
-        this.textApartacao = new WText("<i class=\"fa fa-sitemap\"></i> <span>Apartações</span>");
-        this.textAnimais = new WText("<i class=\"fa fa-paw\"></i> <span>Animais</span>");
         this.textEstatistica = new WText("<i class=\"lnr lnr-chart-bars\"></i> <span>Estatística</span>");
         this.textNotificacao = new WText("<i class=\"lnr lnr-alarm\"></i> <span>Notitficações</span>"
                 + "<span style=\"position: relative; margin-top: -25px;margin-left: -110px;\" class=\"badge bg-danger\">5</span>");
@@ -101,14 +101,14 @@ public class MenuBar extends WContainerWidget {
         mapUser.put("<span class=\"lnr lnr-exit\"></span> ", "<span>Logout</span>");
         this.textUser = new MenuDown("<i class=\"lnr lnr-user\"></i> <span>Perfil</span>", mapUser);
         List<WContainerWidget> userDown = this.textUser.getListDivDown();
-        
+
         loteDown.get(0).setToolTip("Abrir menu de Lotes");
 
         //tooltip
         this.textHome.setToolTip("Abrir menu de Controle");
         this.textLotes.setToolTip("Abrir menus");
-        this.textApartacao.setToolTip("Abrir menu de Apartações");
-        this.textAnimais.setToolTip("Abrir menu de Animais");
+        loteDown.get(1).setToolTip("Abrir menu de Apartações");
+        loteDown.get(2).setToolTip("Abrir menu de Animais");
         this.textEstatistica.setToolTip("Abrir menu de Estatística");
         this.textNotificacao.setToolTip("Abrir menu de Notificações");
         this.textConfig.setToolTip("Abrir menu de Configuração");
@@ -117,8 +117,6 @@ public class MenuBar extends WContainerWidget {
         //fim lotes
         this.template.bindWidget("text-home", getTextHome());
         this.template.bindWidget("text-lotes", getTextLotes());
-        this.template.bindWidget("text-apartacao", getTextApartacao());
-        this.template.bindWidget("text-animais", getTextAnimais());
         this.template.bindWidget("text-charts", getTextEstatistica());
         this.template.bindWidget("text-alarm", getTextNotificacao());
         this.template.bindWidget("text-config", getTextConfig());
@@ -141,19 +139,17 @@ public class MenuBar extends WContainerWidget {
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextLotes());
             signalMenuEvent.trigger(Page.LOTES);
         });
-        loteDown.get(2).clicked().addListener(this, (mouse) -> {
-            this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextLotes());
-            signalMenuEvent.trigger(Page.RACAO);
-        });
-        getTextApartacao().clicked().addListener(this, (mouse) -> {
-            changeSelectedColor("idApartacao");
+        loteDown.get(1).clicked().addListener(this, (mouse) -> {
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextApartacao());
             signalMenuEvent.trigger(Page.APARTACAO);
         });
-        getTextAnimais().clicked().addListener(this, (mouse) -> {
-            changeSelectedColor("idAnimais");
+        loteDown.get(2).clicked().addListener(this, (mouse) -> {
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextAnimais());
             signalMenuEvent.trigger(Page.ANIMAIS);
+        });
+        loteDown.get(4).clicked().addListener(this, (mouse) -> {
+            this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextLotes());
+            signalMenuEvent.trigger(Page.RACAO);
         });
         getTextEstatistica().clicked().addListener(this, (mouse) -> {
             changeSelectedColor("idChart");
@@ -173,7 +169,7 @@ public class MenuBar extends WContainerWidget {
         this.textUser.clicked().addListener(this, (mouse) -> {
             changeSelectedColor("idUser");
         });
-       
+
         userDown.get(0).clicked().addListener(this, (mouse) -> {
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextUser());
             signalMenuEvent.trigger(Page.USUARIO_PERFIL);
@@ -189,7 +185,7 @@ public class MenuBar extends WContainerWidget {
         userDown.get(4).clicked().addListener(this, (mouse) -> {
             this.pgAdmin.logout();
         });
-                
+
         //init a selection at home
         changeSelectedColor("idHome");
         this.addWidget(this.template);
@@ -211,7 +207,7 @@ public class MenuBar extends WContainerWidget {
         this.doJavaScript(""
                 + ""
                 + "\n"
-                + "    var vetor = ['idHome','idLote','idApartacao','idAnimais','idChart','idAlarm','idConfig','idUser'];\n"
+                + "    var vetor = ['idHome','idLote','idChart','idAlarm','idConfig','idUser'];\n"
                 + "    for (var i = 0; i < vetor.length; i++){\n"
                 + "        \n"
                 + "         var dado = vetor[i];\n"

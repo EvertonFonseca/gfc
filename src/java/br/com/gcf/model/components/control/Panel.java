@@ -36,9 +36,9 @@ public class Panel extends WContainerWidget {
         this.labelTitle = new WText(title);
         labelTitle.setTextAlignment(AlignmentFlag.AlignCenter);
         labelTitle.setMinimumSize(new WLength(100, WLength.Unit.Percentage), WLength.Auto);
-        labelTitle.getDecorationStyle().setForegroundColor(WColor.white);
+        labelTitle.getDecorationStyle().setForegroundColor(new WColor("#676a6d"));
         labelTitle.getDecorationStyle().getFont().setSize(WFont.Size.Small, WLength.Auto);
-        labelTitle.getDecorationStyle().setBackgroundColor(new WColor("#595959"));
+        labelTitle.getDecorationStyle().setBackgroundColor(WColor.white);
         labelTitle.getDecorationStyle().setBorder(new WBorder(WBorder.Style.Solid, WBorder.Width.Thin, WColor.gray), Side.Bottom);
 
         this.box.addWidget(labelTitle, 0, AlignmentFlag.AlignCenter, AlignmentFlag.AlignMiddle);
@@ -58,9 +58,9 @@ public class Panel extends WContainerWidget {
         labelTitle = new WText(title);
         labelTitle.setTextAlignment(AlignmentFlag.AlignCenter);
         labelTitle.setMinimumSize(new WLength(100, WLength.Unit.Percentage), WLength.Auto);
-        labelTitle.getDecorationStyle().setForegroundColor(WColor.white);
+        labelTitle.getDecorationStyle().setForegroundColor(new WColor("#676a6d"));
         labelTitle.getDecorationStyle().getFont().setSize(WFont.Size.Small, WLength.Auto);
-        labelTitle.getDecorationStyle().setBackgroundColor(new WColor("#595959"));
+        labelTitle.getDecorationStyle().setBackgroundColor(WColor.white);
         labelTitle.getDecorationStyle().setBorder(new WBorder(WBorder.Style.Solid, WBorder.Width.Thin, WColor.gray), Side.Bottom);
 
         this.box.addWidget(labelTitle, 0, AlignmentFlag.AlignCenter, AlignmentFlag.AlignMiddle);

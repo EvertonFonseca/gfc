@@ -168,7 +168,8 @@ public class DivLotes extends WContainerWidget {
         textFiltro.setMaximumSize(new WLength(250, WLength.Unit.Pixel),WLength.Auto);
         
         WTemplate btBuscar =  new WTemplate();
-        btBuscar.setTemplateText("<button type=\"button\" class=\"btn btn-primary\">Filtrar</button>");
+        btBuscar.setToolTip("Clica para filtrar");
+        btBuscar.setTemplateText("<button type=\"button\" class=\"btn-sm btn btn-primary lnr lnr-funnel\"></button>");
         
         ComboBox<String> comboSelector = new ComboBox<>(
                 new String[]{
@@ -196,6 +197,26 @@ public class DivLotes extends WContainerWidget {
         btAdd.setMaximumSize(new WLength(140, WLength.Unit.Pixel), new WLength(40, WLength.Unit.Pixel));
         btDeletar.setMaximumSize(new WLength(140, WLength.Unit.Pixel), new WLength(40, WLength.Unit.Pixel));
       
+        
+        btBuscar.clicked().addListener(btBuscar,(mouse) -> {
+      
+            if (comboSelector.getCurrentIndex() == 0) {
+
+                web.createMessageTemp("Nenhum campo foi definido para o filtro!", Web.Tipo_Mensagem.AVISO);
+                return;
+            }
+            if (textFiltro.getText().isEmpty()) {
+                
+                this.modelTableFiltro((VirtualModelLotes<Lote_DTO>) tableView.getModel(),"","",true);
+                
+            } else {
+               
+                String condicao = textFiltro.getText();
+                String campo = comboSelector.getCurrentText().toString();
+                this.modelTableFiltro((VirtualModelLotes<Lote_DTO>) tableView.getModel(), campo, condicao,false);
+            }
+        });
+        
         btAdd.clicked().addListener(btAdd, (mouse) -> {
 
             if (dialogLote == null) {
@@ -321,6 +342,108 @@ public class DivLotes extends WContainerWidget {
 
                 List<Lote_DTO> lotes = Lote_DAO.readAllLotesFazendas();
 
+                this.beginLock();
+
+                signal.trigger(lotes);
+
+                this.endLock();
+            }
+        });
+    }
+    
+     private void modelTableFiltro(VirtualModelLotes<Lote_DTO> model,String campo,String condicao,boolean isAll) {
+
+        Signal1 signalLote = new Signal1();
+
+        Loader loader = new Loader(web);
+
+        signalLote.addListener(this, ((arg) -> {
+
+            List<Lote_DTO> lotes = (List<Lote_DTO>) arg;
+
+            if (lotes == null) {
+                return;
+            }
+            
+            model.clear();
+            
+            try {
+
+                for (int i = 0; i < lotes.size(); i++) {
+
+                    Lote_DTO lote = lotes.get(i);
+                    model.addTemplate(i, lote);
+
+                    for (int j = 0; j < model.getHeaderNamesColumns().length; j++) {
+
+                        switch (j) {
+
+                            case 0: // codigo
+                                model.insert(i, j, String.valueOf(lote.getId()));
+                                break;
+                            case 1: // lote
+                                model.insert(i, j, lote.getNome());
+                                break;
+                            case 2: // data
+                                model.insert(i, j, lote.getData());
+                                break;
+                            case 3: // peso minimo
+                                model.insert(i, j, String.valueOf(lote.getPesoMinimo()));
+                                break;
+                            case 4: // peso medio
+                                model.insert(i, j, String.valueOf(lote.getPesoMedio()));
+                                break;
+                            case 5: // peso maximo
+                                model.insert(i, j, String.valueOf(lote.getPesoMaximo()));
+                                break;
+                            case 6: // peso total
+                                model.insert(i, j, String.valueOf(lote.getPesoTotal()));
+                                break;
+                            case 7: // racao alimento
+                                model.insert(i, j, String.valueOf(lote.getRacao().toString()));
+                                break;
+                            case 8: // peso da carcaça
+                                model.insert(i, j, String.valueOf(lote.getPesoDaCarcaca()));
+                                break;
+                            case 9: // arroba
+                                model.insert(i, j, String.valueOf(lote.getArroba()));
+                                break;
+                            case 10: // quantidade que possue apartacao
+                                model.insert(i, j, String.valueOf(lote.getQuantidadeApartacao()));
+                                break;
+                            case 11: // quantidade de animais
+                                model.insert(i, j, String.valueOf(lote.getQuantidade()));
+                                break;
+                            case 12: // quantidade de animais
+                                model.insert(i, j, "");
+                                break;
+                            case 13: // remover
+                                model.insert(i, j, "");
+                                break;
+                        }
+
+                    }
+                }
+
+                model.updateTable();
+
+            } finally {
+                loader.destroy();
+                tableView.setFocus();
+            }
+
+        }));
+
+        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(),signalLote) {
+            @Override
+            public void run(){
+
+                List<Lote_DTO> lotes = null;
+                if (!isAll) {
+                    lotes = Lote_DAO.readAllLotesByFiltro(campo, condicao);
+                } else {
+                    lotes = Lote_DAO.readAllLotesFazendas();
+                }
                 this.beginLock();
 
                 signal.trigger(lotes);

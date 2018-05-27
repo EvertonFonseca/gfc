@@ -110,7 +110,7 @@ public class DivRacao extends WContainerWidget {
         tableView.setEditTriggers(EnumSet.of(WAbstractItemView.EditTrigger.NoEditTrigger));
         tableView.setColumnWidth(0, new WLength(100, WLength.Unit.Pixel));
         tableView.setColumnWidth(1, new WLength(200, WLength.Unit.Pixel));
-        tableView.setColumnWidth(1, new WLength(250, WLength.Unit.Pixel));
+        tableView.setColumnWidth(2, new WLength(250, WLength.Unit.Pixel));
         tableView.setAttributeValue("oncontextmenu", "event.cancelBubble = true; event.returnValue = false; return false;");
 
         String[] header = new String[]{

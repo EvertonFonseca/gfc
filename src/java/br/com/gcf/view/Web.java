@@ -163,12 +163,12 @@ public class Web extends WContainerWidget implements Client {
 
     public DMessagem createMessageTemp(String message, String tipo) {
 
-        return new DMessagem(message, tipo, this);
+        return new DMessagem(message, tipo,(WContainerWidget) webApp.getRoot().getParent());
     }
 
     public DMessagem createMessageTemp(String message, String tipo, int delay) {
 
-        return new DMessagem(message, tipo, delay, this);
+        return new DMessagem(message, tipo, delay,(WContainerWidget) webApp.getRoot().getParent());
     }
 
     private void importFile(WVBoxLayout boxV) {

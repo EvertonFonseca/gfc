@@ -27,6 +27,7 @@ public class WebMain extends WApplication {
         super(env);
         
         System.out.println("Locale: " + env.getLocale());
+        this.getRoot().setId("Root");
         this.setLocale(env.getLocale());
         this.checkLogout();
         

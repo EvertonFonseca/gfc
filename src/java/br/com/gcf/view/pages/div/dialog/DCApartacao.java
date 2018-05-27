@@ -129,7 +129,7 @@ public class DCApartacao extends DialogAbstracao {
 
             if (Apartacao_DAO.insert(apartacao)) {
 
-                DivApartacao.signalApartacao.trigger(apartacao);
+                getSignalInsert().trigger("");
             }
             reject();
         });

@@ -40,11 +40,10 @@ import java.util.List;
  *
  * @author Windows
  */
-public class DivApartacao extends WContainerWidget implements Signal1.Listener<Apartacao_DTO> {
+public class DivApartacao extends WContainerWidget{
 
     private WVBoxLayout box;
     private WTemplate tempFlux;
-    public static Signal1<Apartacao_DTO> signalApartacao;
     private WContainerWidget divCenter;
     private WContainerWidget divMain;
     private WVBoxLayout boxMain;
@@ -73,14 +72,11 @@ public class DivApartacao extends WContainerWidget implements Signal1.Listener<A
         this.divMain = new WContainerWidget();
         this.divMain.setOverflow(Overflow.OverflowAuto, Orientation.Vertical);
 
-        signalApartacao = new Signal1<>();
         createControl();
         createTable();
 
         box.addWidget(divCenter, 0);
         box.addWidget(divMain, 1);
-
-        signalApartacao.addListener(this, this);
 
     }
 
@@ -200,6 +196,16 @@ public class DivApartacao extends WContainerWidget implements Signal1.Listener<A
               
                 this.dialogApartacao = new DCApartacao(web);
                 
+                this.dialogApartacao.getSignalInsert().addListener(dialogApartacao, (arg) -> {
+
+                    //cleat table
+                    this.divMain.clear();
+                    this.createTable();
+
+                    this.web.createMessageTemp("Apartação inserido com sucesso!", Web.Tipo_Mensagem.SUCESSO);
+
+                });
+                
                 this.dialogApartacao.getSignalClose().addListener(this.dialogApartacao,() -> {
                     
                     this.dialogApartacao = null;
@@ -217,15 +223,6 @@ public class DivApartacao extends WContainerWidget implements Signal1.Listener<A
         boxh.addWidget(btAdd, 0,AlignmentFlag.AlignMiddle,AlignmentFlag.AlignRight);
         boxh.addWidget(btDeletar,0,AlignmentFlag.AlignMiddle,AlignmentFlag.AlignRight);
 
-    }
-
-    public void trigger(Apartacao_DTO arg) {
-
-        //cleat table
-        this.divMain.clear();
-        this.createTable();
-
-        this.web.createMessageTemp("Apartação inserido com sucesso!", Web.Tipo_Mensagem.SUCESSO);
     }
 
     private void modelTable(String[] header, WTableView tableView, boolean isSorting, int index) {

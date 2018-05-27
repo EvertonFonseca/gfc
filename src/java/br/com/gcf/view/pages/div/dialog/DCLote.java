@@ -18,6 +18,7 @@ import br.com.gcf.view.Web;
 import br.com.gcf.view.pages.div.DivLotes;
 import eu.webtoolkit.jwt.AlignmentFlag;
 import eu.webtoolkit.jwt.WAnimation;
+import eu.webtoolkit.jwt.WApplication;
 import eu.webtoolkit.jwt.WContainerWidget;
 import eu.webtoolkit.jwt.WGridLayout;
 import eu.webtoolkit.jwt.WLength;
@@ -30,19 +31,19 @@ import eu.webtoolkit.jwt.WText;
  */
 public class DCLote extends DialogAbstracao {
 
-    private EditLine textNome,textArroba,textCarcaca;
+    private EditLine textNome, textArroba, textCarcaca;
     private ComboBox<Alimento_DTO> comboRacao;
     private Web web;
-    
+
     public DCLote(Web web) {
         super("Cadastro Lote");
 
         this.web = web;
-        
-        this.resize(new WLength(500, WLength.Unit.Pixel),new WLength(350, WLength.Unit.Pixel));
+
+        this.resize(new WLength(500, WLength.Unit.Pixel), new WLength(350, WLength.Unit.Pixel));
         this.setResizable(true);
         this.init();
-      
+
         WAnimation animation = new WAnimation(WAnimation.AnimationEffect.SlideInFromTop);
         animation.setDuration(500);
         this.setHidden(false, animation);
@@ -52,17 +53,17 @@ public class DCLote extends DialogAbstracao {
 
         //dados empresa
         WContainerWidget divDadosLote = createDadosLote();
-      
+
         this.getContents().setOverflow(WContainerWidget.Overflow.OverflowHidden);
-           
-        getTitleBar().setMaximumSize(WLength.Auto,new WLength(50, WLength.Unit.Pixel));
+
+        getTitleBar().setMaximumSize(WLength.Auto, new WLength(50, WLength.Unit.Pixel));
 
         WContainerWidget divCenter = new WContainerWidget(getContents());
-        
+
         WGridLayout grid = new WGridLayout(divCenter);
         grid.setHorizontalSpacing(20);
         grid.setVerticalSpacing(2);
- 
+
         grid.addWidget(divDadosLote, 0, 0);
 
         Button btSalvar = new Button("Salvar", getFooter(), 10);
@@ -76,18 +77,33 @@ public class DCLote extends DialogAbstracao {
         btSalvar.resize(100, 30);
         //listenner
         btFechar.clicked().addListener(btFechar, (mouse) -> {
-           
+
             reject();
         });
         btSalvar.clicked().addListener(btSalvar, (mouse) -> {
-          
+
+            //check if fields aren't empty
+            if (textNome.getText().isEmpty() || textArroba.getText().isEmpty() || textCarcaca.getText().isEmpty()) {
+
+                web.createMessageTemp("Alguns campos não foram preenchidos", Web.Tipo_Mensagem.AVISO);
+
+                return;
+            }
+
+            
+            if (Lote_DAO.isLoteExist(textNome.getText())) {
+
+                web.createMessageTemp("O Lote " + textNome.getText() + " já existe nos registros", Web.Tipo_Mensagem.AVISO);
+                return;
+            }
+            
             Lote_DTO lote = new Lote_DTO();
             lote.setNome(Web.UTF8toISO(textNome.getText()));
             lote.setData(Web.formatDateToString("dd/MM/yyyy"));
             lote.setRacao(comboRacao.getSelecteObject());
-            
+
             if (Lote_DAO.insert(lote)) {
-                
+
                 getSignalInsert().trigger("Lote inserido com sucesso!");
             }
             reject();
@@ -99,17 +115,17 @@ public class DCLote extends DialogAbstracao {
 
         WContainerWidget container = new WContainerWidget();
         container.resize(new WLength(90, WLength.Unit.Percentage), WLength.Auto);
-        
+
         WGridLayout grid = new WGridLayout(container);
         grid.setContentsMargins(0, 0, 0, 0);
         grid.setHorizontalSpacing(20);
         grid.setVerticalSpacing(15);
-  
+
         WText labelNome = new WText("Lote:");
         WText labelCarcaca = new WText("Carcaça:");
         WText labelArroba = new WText("Arroba:");
         WText labelRacao = new WText("Ração:");
-        
+
         WTemplate btAddRacao = new WTemplate();
         btAddRacao.setTemplateText("<button type=\"button\" style=\"\" class=\"btn btn-default\">+</button>");
 
@@ -125,14 +141,13 @@ public class DCLote extends DialogAbstracao {
             });
         });
 
-        this.comboRacao   = new ComboBox(Alimento_DAO.readAllAlimentos());
+        this.comboRacao = new ComboBox(Alimento_DAO.readAllAlimentos());
         this.textNome = new EditLine();
         this.textCarcaca = new EditLine();
         this.textArroba = new EditLine();
-       
+
         textNome.setFocus();
-        
-        
+
         //add grid
         grid.addWidget(labelNome, 1, 0, AlignmentFlag.AlignMiddle);
         grid.addWidget(textNome, 1, 1, AlignmentFlag.AlignMiddle);
@@ -144,22 +159,10 @@ public class DCLote extends DialogAbstracao {
         grid.addWidget(new WText("@"), 3, 2, AlignmentFlag.AlignMiddle);
         grid.addWidget(labelRacao, 4, 0, AlignmentFlag.AlignMiddle);
         grid.addWidget(comboRacao, 4, 1, AlignmentFlag.AlignMiddle);
-        grid.addWidget(btAddRacao,4, 2, AlignmentFlag.AlignMiddle);
-        
-        
+        grid.addWidget(btAddRacao, 4, 2, AlignmentFlag.AlignMiddle);
+
         return container;
-     
-    }
 
-    private ButtonUtil createBtUtil(String toolTip) {
-
-        ButtonUtil btAdd = new ButtonUtil("+", 10);
-        btAdd.setToolTip(toolTip);
-        btAdd.resize(new WLength(35, WLength.Unit.Pixel), new WLength(30, WLength.Unit.Pixel));
-        btAdd.setMinimumSize(new WLength(35, WLength.Unit.Pixel), new WLength(30, WLength.Unit.Pixel));
-        btAdd.setMinimumSize(new WLength(35, WLength.Unit.Pixel), new WLength(30, WLength.Unit.Pixel));
-
-        return btAdd;
     }
 
 }

@@ -151,7 +151,7 @@ public class VirtualModelRacao<T> extends VirtualAbstractTableModel<T> {
                 boxV.setContentsMargins(0, 0, 0, 0);
                 divImage.resize(new WLength(100, WLength.Unit.Percentage), new WLength(100, WLength.Unit.Percentage));
                 
-                TextMenu textMenu = new TextMenu(getData(index).toString());
+                TextMenu textMenu = new TextMenu(getData(index).toString(),true);
                 textMenu.setPaddingChilds(5);
                 Alimento_DTO alimento = (Alimento_DTO) getTemplate(index.getRow());
                 HashMap<String, String> map = alimento.getReceitas();

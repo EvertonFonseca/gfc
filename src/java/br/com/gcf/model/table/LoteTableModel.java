@@ -39,6 +39,14 @@ public class LoteTableModel {
 
 
     }
+    public static String selectLoteFazendaByFiltro(String campo,String condicao) {
+
+        return "select * from lotes L \n"
+                + "left join (select COUNT(id_apartacao) as MAX, id_lote \n"
+                + "from apartacoes GROUP BY id_lote) A \n"
+                + "on L.id_lote = A.id_lote left join alimento R on L.id_alimento = R.id_alimento where "+campo+" LIKE "+condicao;
+
+    }
 
     public static String selectAllSorting(int index) {
 
@@ -86,6 +94,11 @@ public class LoteTableModel {
                 + " WHERE " + ID_LOTE + " = " + id;
     }
 
+    public static String isExistName(String nome){
+        
+        return "select " + ID_LOTE + " from public.lotes where lotes.nome_lote = '"+nome+"'";
+    }
+    
     public static String delete(int id) {
 
         return "DELETE FROM " + TABLE_NAME + " WHERE " + ID_LOTE + " = " + id;

@@ -68,7 +68,6 @@ public class DMessagem extends WContainerWidget {
     }
 
     public DMessagem(String message, String image, int delay, WContainerWidget parent) {
-
         super(parent);
         this.message = message;
         this.tipo = image;

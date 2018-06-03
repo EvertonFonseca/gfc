@@ -165,7 +165,7 @@ public abstract class VirtualAbstractTableModel<T> extends WAbstractTableModel {
                 if (value == null) {
                     return null;
                 }
-                return new WString(this.getMap().get(key));
+                return new WString(Web.UTF8toISO(this.getMap().get(key)));
 
             default:
                 return null;
@@ -176,7 +176,7 @@ public abstract class VirtualAbstractTableModel<T> extends WAbstractTableModel {
         if (orientation == Orientation.Horizontal) {
             switch (role) {
                 case ItemDataRole.DisplayRole:
-                    return new WString(this.names[section]);
+                    return new WString(Web.UTF8toISO(this.names[section]));
                 default:
                     return null;
             }

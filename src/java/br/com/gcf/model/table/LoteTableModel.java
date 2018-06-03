@@ -35,7 +35,7 @@ public class LoteTableModel {
         return "select * from lotes L \n"
                 + "left join (select COUNT(id_apartacao) as MAX, id_lote \n"
                 + "from apartacoes GROUP BY id_lote) A \n"
-                + "on L.id_lote = A.id_lote left join alimento R on L.id_alimento = R.id_alimento";
+                + "on L.id_lote = A.id_lote left join alimento R on L.id_alimento = R.id_alimento order by L.id_lote";
 
 
     }
@@ -44,7 +44,7 @@ public class LoteTableModel {
         return "select * from lotes L \n"
                 + "left join (select COUNT(id_apartacao) as MAX, id_lote \n"
                 + "from apartacoes GROUP BY id_lote) A \n"
-                + "on L.id_lote = A.id_lote left join alimento R on L.id_alimento = R.id_alimento where "+campo+" LIKE "+condicao;
+                + "on L.id_lote = A.id_lote left join alimento R on L.id_alimento = R.id_alimento where Upper("+campo+") LIKE "+condicao+" order by L.id_lote";
 
     }
 

@@ -52,7 +52,7 @@ public class Web extends WContainerWidget implements Client {
         server.connect(this);
         setLayoutSizeAware(true);
         WApplication.getInstance().enableUpdates(true);
-        
+
         interPathChanged();
         this.init();
     }
@@ -96,15 +96,15 @@ public class Web extends WContainerWidget implements Client {
 
                         break;
                     case "/":
-                       
+
                         box.addWidget(new PageLogin(getInstancia()));
-                        System.err.println("Connecting: "+webApp.hasQuit());
+                        System.err.println("Connecting: " + webApp.hasQuit());
                         break;
                     case Index.Path_Response.ADMIN:
-                       
+
                         box.addWidget(new PAdmin(getInstancia()));
                         createMessageTemp("Login conectado com sucesso!", Tipo_Mensagem.SUCESSO);
-                        
+
                         break;
 
                     default:
@@ -155,7 +155,7 @@ public class Web extends WContainerWidget implements Client {
     protected void layoutSizeChanged(int width, int height) {
         super.layoutSizeChanged(width, height);
 
-        Web.consoleJS("width: "+width+" , height: "+height);
+        Web.consoleJS("width: " + width + " , height: " + height);
         signalSize.trigger(width, height);
         WApplication.getInstance().refresh();
 
@@ -163,12 +163,12 @@ public class Web extends WContainerWidget implements Client {
 
     public DMessagem createMessageTemp(String message, String tipo) {
 
-        return new DMessagem(message, tipo,(WContainerWidget) webApp.getRoot().getParent());
+        return new DMessagem(message, tipo, (WContainerWidget) webApp.getRoot().getParent());
     }
 
     public DMessagem createMessageTemp(String message, String tipo, int delay) {
 
-        return new DMessagem(message, tipo, delay,(WContainerWidget) webApp.getRoot().getParent());
+        return new DMessagem(message, tipo, delay, (WContainerWidget) webApp.getRoot().getParent());
     }
 
     private void importFile(WVBoxLayout boxV) {
@@ -345,10 +345,10 @@ public class Web extends WContainerWidget implements Client {
 
         return text.replace("\"", "");
     }
-    
-    public static void consoleJS(String text){
-        
-        WApplication.getInstance().doJavaScript("console.log('"+text+"')");
+
+    public static void consoleJS(String text) {
+
+        WApplication.getInstance().doJavaScript("console.log('" + text + "')");
     }
 
 }

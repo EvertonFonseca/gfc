@@ -12,29 +12,30 @@ package br.com.gcf.model.dto;
 public class Animal_DTO {
     
     private int id;
-    private String identificador;
+    private String nome;
     private String tag;
     private String sisbov;
     private String peso;
-    private Animal_DTO pai;
-    private Animal_DTO mae;
     private String dataNascimento;
-    private String apartacao;
+    private Lote_DTO lote;
+    private Apartacao_DTO apartacao;
+    private Familia_DTO familia;
 
     public Animal_DTO() {
     }
 
-    public Animal_DTO(int id, String identificador, String tag, String sisbov, String peso, Animal_DTO pai, Animal_DTO mae, String dataNascimento, String apartacao) {
+    public Animal_DTO(int id, String nome, String tag, String sisbov, String peso, String dataNascimento, Lote_DTO lote, Apartacao_DTO apartacao, Familia_DTO familia) {
         this.id = id;
-        this.identificador = identificador;
+        this.nome = nome;
         this.tag = tag;
         this.sisbov = sisbov;
         this.peso = peso;
-        this.pai = pai;
-        this.mae = mae;
         this.dataNascimento = dataNascimento;
+        this.lote = lote;
         this.apartacao = apartacao;
+        this.familia = familia;
     }
+
 
     /**
      * @return the id
@@ -51,17 +52,17 @@ public class Animal_DTO {
     }
 
     /**
-     * @return the identificador
+     * @return the nome
      */
-    public String getIdentificador() {
-        return identificador;
+    public String getNome() {
+        return nome;
     }
 
     /**
-     * @param identificador the identificador to set
+     * @param nome the nome to set
      */
-    public void setIdentificador(String identificador) {
-        this.identificador = identificador;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     /**
@@ -107,34 +108,6 @@ public class Animal_DTO {
     }
 
     /**
-     * @return the pai
-     */
-    public Animal_DTO getPai() {
-        return pai;
-    }
-
-    /**
-     * @param pai the pai to set
-     */
-    public void setPai(Animal_DTO pai) {
-        this.pai = pai;
-    }
-
-    /**
-     * @return the mae
-     */
-    public Animal_DTO getMae() {
-        return mae;
-    }
-
-    /**
-     * @param mae the mae to set
-     */
-    public void setMae(Animal_DTO mae) {
-        this.mae = mae;
-    }
-
-    /**
      * @return the dataNascimento
      */
     public String getDataNascimento() {
@@ -149,18 +122,50 @@ public class Animal_DTO {
     }
 
     /**
+     * @return the lote
+     */
+    public Lote_DTO getLote() {
+        return lote;
+    }
+
+    /**
+     * @param lote the lote to set
+     */
+    public void setLote(Lote_DTO lote) {
+        this.lote = lote;
+    }
+
+    /**
      * @return the apartacao
      */
-    public String getApartacao() {
+    public Apartacao_DTO getApartacao() {
         return apartacao;
     }
 
     /**
      * @param apartacao the apartacao to set
      */
-    public void setApartacao(String apartacao) {
+    public void setApartacao(Apartacao_DTO apartacao) {
         this.apartacao = apartacao;
     }
-    
+
+    /**
+     * @return the familia
+     */
+    public Familia_DTO getFamilia() {
+        return familia;
+    }
+
+    /**
+     * @param familia the familia to set
+     */
+    public void setFamilia(Familia_DTO familia) {
+        this.familia = familia;
+    }
+
+    @Override
+    public String toString() {
+        return this.nome;
+    }
     
 }

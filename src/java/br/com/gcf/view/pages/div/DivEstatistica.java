@@ -54,7 +54,7 @@ public class DivEstatistica extends WContainerWidget {
         WContainerWidget divMap = new WContainerWidget();
         divMap.resize(new WLength(100, WLength.Unit.Percentage), new WLength(100, WLength.Unit.Percentage));
         divMap.setId("map");
-        WApplication.getInstance().doJavaScript(""
+        WApplication.getInstance().doJavaScript("try{\n"
                 + "mapboxgl.accessToken = 'pk.eyJ1IjoiZXZlcnRvbmZvbnNlY2EiLCJhIjoiY2o2eGlmeDB6MjY5bTJxbGE1bHd0MGloMyJ9.4NP9z61Z_S8wyiebqwvBJA';\n"
                 + "var map = new mapboxgl.Map({\n"
                 + "container: 'map',\n"
@@ -69,9 +69,12 @@ public class DivEstatistica extends WContainerWidget {
                 + "map.resize();"
                 + "},1000);"
                 + this.signalMap.createCall("timeout")
-                + "map.resize();"
+                + "map.resize();\n"
+                + "} catch (e) {\n"
+                + "console.log(e)\n"
+                + "}"
         );
-
+         
         box.addWidget(divMap);
         
     }

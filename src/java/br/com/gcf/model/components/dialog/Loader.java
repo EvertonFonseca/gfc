@@ -43,9 +43,7 @@ public class Loader extends WContainerWidget {
     }
 
     public void destroy() {
-
         this.remove();
-
     }
 
 }

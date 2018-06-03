@@ -5,17 +5,19 @@
  */
 package br.com.gcf.view.pages.div;
 
+import br.com.gcf.control.dao.Animal_DAO;
 import br.com.gcf.model.dto.Fazenda_DTO;
 import br.com.gcf.control.dao.Lote_DAO;
 import br.com.gcf.control.threads.ReportBean;
 import br.com.gcf.control.threads.ReportTask;
-import br.com.gcf.model.dto.Lote_DTO;
+import br.com.gcf.model.dto.Animal_DTO;
 import br.com.gcf.model.components.control.Button;
 import br.com.gcf.model.components.control.ComboBox;
 import br.com.gcf.model.components.control.EditLine;
 import br.com.gcf.model.components.dialog.Loader;
 import br.com.gcf.model.components.table.VirtualAbstractTableModel;
-import br.com.gcf.model.components.table.VirtualModelLotes;
+import br.com.gcf.model.components.table.VirtualModelAnimal;
+import br.com.gcf.model.dto.Animal_DTO;
 import br.com.gcf.view.Web;
 import br.com.gcf.view.pages.div.dialog.DCLote;
 import eu.webtoolkit.jwt.AlignmentFlag;
@@ -41,19 +43,17 @@ import java.util.List;
  *
  * @author Windows
  */
-public class DivAnimais extends WContainerWidget implements Signal1.Listener<String> {
+public class DivAnimais extends WContainerWidget {
 
     private WVBoxLayout box;
     private WTemplate tempFlux;
-    public static Signal1<String> signalLotes;
-    private List<Fazenda_DTO> listaLotes;
     private WContainerWidget divCenter;
     private WContainerWidget divMain;
     private WVBoxLayout boxMain;
     private JSignal onclickedRight;
     private Web web;
     private WTableView tableView;
-    private DCLote dialogLote;
+    private DCLote dialogAnimal;
 
     public DivAnimais(Web web) {
 
@@ -74,15 +74,11 @@ public class DivAnimais extends WContainerWidget implements Signal1.Listener<Str
         this.divMain = new WContainerWidget();
         this.divMain.setOverflow(Overflow.OverflowAuto, Orientation.Vertical);
 
-        this.listaLotes = new LinkedList<>();
-        signalLotes = new Signal1<>();
         createControl();
         createTable();
 
         box.addWidget(divCenter, 0);
         box.addWidget(divMain, 1);
-
-        signalLotes.addListener(this, this);
 
     }
 
@@ -108,17 +104,17 @@ public class DivAnimais extends WContainerWidget implements Signal1.Listener<Str
         tableView.setColumnWidth(0, new WLength(100, WLength.Unit.Pixel));
         tableView.setColumnWidth(1, new WLength(200, WLength.Unit.Pixel));
         tableView.setAttributeValue("oncontextmenu", "event.cancelBubble = true; event.returnValue = false; return false;");
-     
+
         String[] header = new String[]{
             "CODIGO".toUpperCase(),
             "ID".toUpperCase(),
             "TAG".toUpperCase(),
             "SISBOV".toUpperCase(),
+            "Nascimento".toUpperCase(),
             "PAI".toUpperCase(),
             "MÃE".toUpperCase(),
+            "Familia".toUpperCase(),
             "PESO".toUpperCase(),
-            "ARROBA".toUpperCase(),
-            "PESO CARCAÇA".toUpperCase(),
             "APARTADO".toUpperCase(),
             "Editar".toUpperCase(),
             "Remover".toUpperCase()
@@ -130,7 +126,7 @@ public class DivAnimais extends WContainerWidget implements Signal1.Listener<Str
 
             if (tableView.isSortingEnabled(index)) {
 
-                VirtualModelLotes mCliente = (VirtualModelLotes) tableView.getModel();
+                VirtualModelAnimal mCliente = (VirtualModelAnimal) tableView.getModel();
                 this.modelTable(header, tableView, !mCliente.isIsSorting(), index);
 
                 //      mCliente.iteretorDesc(mCliente.getMap());
@@ -177,11 +173,11 @@ public class DivAnimais extends WContainerWidget implements Signal1.Listener<Str
                     "ID".toUpperCase(),
                     "TAG".toUpperCase(),
                     "SISBOV".toUpperCase(),
+                    "Nascimento".toUpperCase(),
                     "PAI".toUpperCase(),
                     "MÃE".toUpperCase(),
+                    "Familia".toUpperCase(),
                     "PESO".toUpperCase(),
-                    "ARROBA".toUpperCase(),
-                    "PESO CARCAÇA".toUpperCase(),
                     "APARTADO".toUpperCase()
                 });
         
@@ -198,13 +194,23 @@ public class DivAnimais extends WContainerWidget implements Signal1.Listener<Str
       
         btAdd.clicked().addListener(btAdd, (mouse) -> {
 
-            if (dialogLote == null) {
+            if (dialogAnimal == null) {
 
-                this.dialogLote = new DCLote(web);
+                this.dialogAnimal = new DCLote(web);
 
-                this.dialogLote.getSignalClose().addListener(this.dialogLote, () -> {
+                this.dialogAnimal.getSignalInsert().addListener(this.dialogAnimal, (arg) -> {
 
-                    this.dialogLote = null;
+                    //cleat table
+                    this.divMain.clear();
+                    this.createTable();
+
+                    this.web.createMessageTemp(arg, Web.Tipo_Mensagem.SUCESSO);
+
+                });
+                
+                this.dialogAnimal.getSignalClose().addListener(this.dialogAnimal, () -> {
+
+                    this.dialogAnimal = null;
 
                 });
 
@@ -222,83 +228,68 @@ public class DivAnimais extends WContainerWidget implements Signal1.Listener<Str
 
     }
 
-    public void trigger(String arg) {
-
-        //cleat table
-        this.divMain.clear();
-        this.createTable();
-
-        this.web.createMessageTemp(arg, Web.Tipo_Mensagem.SUCESSO);
-    }
-
     private void modelTable(String[] header, WTableView tableView, boolean isSorting, int index) {
 
-        Signal1 signalLotes = new Signal1();
+        Signal1 signalAnimais = new Signal1();
 
-        VirtualModelLotes<Lote_DTO> model = new VirtualModelLotes(web,0, header, tableView);
+        VirtualModelAnimal<Animal_DTO> model = new VirtualModelAnimal<>(web,0, header, tableView);
         model.setIsSorting(isSorting);
         tableView.setModel(model);
 
         Loader loader = new Loader(web);
 
-        signalLotes.addListener(this, ((arg) -> {
+        signalAnimais.addListener(this, ((arg) -> {
 
-            List<Lote_DTO> lotes = (List<Lote_DTO>) arg;
+            List<Animal_DTO> animais = (List<Animal_DTO>) arg;
 
-            if (lotes == null) {
+            if (animais == null) {
                 return;
             }
             try {
 
-                for (int i = 0; i < lotes.size(); i++) {
+                for (int i = 0; i < animais.size(); i++) {
 
-                    Lote_DTO lote = lotes.get(i);
-                    model.addTemplate(i, lote);
+                    Animal_DTO animal = animais.get(i);
+                    model.addTemplate(i,animal);
 
                     for (int j = 0; j < header.length; j++) {
 
                         switch (j) {
 
                             case 0: // codigo
-                                model.insert(i, j, String.valueOf(lote.getId()));
+                                model.insert(i, j, String.valueOf(animal.getId()));
                                 break;
-                            case 1: // lote
-                                model.insert(i, j, lote.getNome());
+                            case 1: // ID
+                                model.insert(i, j, animal.getNome());
                                 break;
-                            case 2: // data
-                                model.insert(i, j, lote.getData());
+                            case 2: // tag
+                                model.insert(i, j, animal.getTag());
                                 break;
-                            case 3: // peso minimo
-                                model.insert(i, j, String.valueOf(lote.getPesoMinimo()));
+                            case 3: // sisbov
+                                model.insert(i, j, animal.getSisbov());
                                 break;
-                            case 4: // peso medio
-                                model.insert(i, j, String.valueOf(lote.getPesoMedio()));
+                            case 4: // data nascimento
+                                model.insert(i, j, animal.getDataNascimento());
                                 break;
-                            case 5: // peso maximo
-                                model.insert(i, j, String.valueOf(lote.getPesoMaximo()));
+                            case 5: // pai
+                                model.insert(i, j, animal.getFamilia().getPai().getNome());
                                 break;
-                            case 6: // peso total
-                                model.insert(i, j, String.valueOf(lote.getPesoTotal()));
+                            case 6: // mae
+                                model.insert(i, j, animal.getFamilia().getMae().getNome());
                                 break;
-                            case 7: // racao alimento
-                                model.insert(i, j, String.valueOf(lote.getRacao().toString()));
+                            case 7: // familia
+                                model.insert(i, j, animal.getFamilia().getNome());
                                 break;
-                            case 8: // peso da carcaça
-                                model.insert(i, j, String.valueOf(lote.getPesoDaCarcaca()));
+                            case 8: // peso
+                                model.insert(i, j, animal.getPeso());
                                 break;
-                            case 9: // arroba
-                                model.insert(i, j, String.valueOf(lote.getArroba()));
+                            case 9: // apartacao
+                                model.insert(i, j, animal.getApartacao().getNome());
                                 break;
-                            case 10: // quantidade que possue apartacao
-                                model.insert(i, j, String.valueOf(lote.getQuantidadeApartacao()));
-                                break;
-                            case 11: // quantidade de animais
-                                model.insert(i, j, String.valueOf(lote.getQuantidade()));
-                                break;
-                            case 12: // quantidade de animais
+                            case 10: // editar
                                 model.insert(i, j, "");
                                 break;
-                            case 13: // remover
+                            case 11: // remover
                                 model.insert(i, j, "");
                                 break;
                         }
@@ -315,15 +306,15 @@ public class DivAnimais extends WContainerWidget implements Signal1.Listener<Str
 
         }));
 
-        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(),signalLotes) {
+        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(),signalAnimais) {
             @Override
             public void run(){
 
-                List<Lote_DTO> lotes = Lote_DAO.readAllLotesFazendas();
+                List<Animal_DTO> animais = Animal_DAO.readAllAnimais();
 
                 this.beginLock();
 
-                signal.trigger(lotes);
+                signal.trigger(animais);
 
                 this.endLock();
             }

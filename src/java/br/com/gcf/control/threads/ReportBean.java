@@ -20,7 +20,7 @@ public class ReportBean {
 
         try {
 
-            if (!(runnable instanceof ReportTask)) {
+            if (!(runnable instanceof ReportTask) && !(runnable instanceof ReportTask2)) {
                 throw new Exception("Runnable must be ReportTask!");
             }
 

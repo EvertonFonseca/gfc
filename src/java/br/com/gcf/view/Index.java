@@ -90,7 +90,7 @@ public class Index extends WtServlet {
     public WApplication createApplication(WEnvironment env) {
 
         getConfiguration().setFavicon("http://" +env.getHostName() + "/GCF/assets/img/favicon.png");
-        WebMain app = new WebMain(env);
+        WebMain app = new WebMain(env,this);
         configCss();
         
         if (!checkPageFound(app)) {
@@ -137,9 +137,6 @@ public class Index extends WtServlet {
         WApplication.getInstance().useStyleSheet(new WLink("assets/datepicker/css/bootstrap-datepicker3.css"));
         WApplication.getInstance().require("assets/datepicker/js/bootstrap-datepicker.min.js");
         WApplication.getInstance().require("assets/datepicker/js/bootstrap-datepicker.pt-BR.min.js");
-        
-        //Location bar
-        WApplication.getInstance().require("js/location-bar.js");
         
         //MapBox
 //        WApplication.getInstance().require("https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js");

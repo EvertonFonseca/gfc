@@ -23,7 +23,13 @@ public class MapaLista<K, V> {
 
     public void put(K key, V value) {
 
-        Mapa<K,V> map = new Mapa<>(key,value);
+        Mapa<K, V> map = new Mapa<>(key, value, false);
+        this.lista.add(map);
+    }
+
+    public void put(K key, V value, boolean isMenuDown) {
+
+        Mapa<K, V> map = new Mapa<>(key, value, isMenuDown);
         this.lista.add(map);
     }
 
@@ -40,10 +46,13 @@ public class MapaLista<K, V> {
 
         private K key;
         private V value;
+        private boolean menuDown;
 
-        public Mapa(K key, V value) {
+        public Mapa(K key, V value,boolean menuDown) {
+          
             this.key = key;
             this.value = value;
+            this.menuDown =  menuDown;
         }
 
         /**
@@ -72,6 +81,13 @@ public class MapaLista<K, V> {
          */
         public void setValue(V value) {
             this.value = value;
+        }
+
+        /**
+         * @return the menuDown
+         */
+        public boolean isMenuDown() {
+            return menuDown;
         }
 
     }

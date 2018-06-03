@@ -70,31 +70,31 @@ public class Lote_DAO {
     public static List<Lote_DTO> readAllLotesByFiltro(String campo, String condicao) {
 
         if (campo.equals("codigo".toUpperCase())) {
-           
+            campo = "L.id_lote::text";
         } else if (campo.equals("lote".toUpperCase())) {
-            campo = "nome_lote";
-            condicao = "'"+condicao+"%'";
+            campo = "nome_lote::text";
         } else if (campo.equals("data".toUpperCase())) {
-
+            campo = "data_lote::text";
         } else if (campo.equals("peso minimo".toUpperCase())) {
-
+            campo = "peso_minimo_lote::text";
         } else if (campo.equals("peso medio".toUpperCase())) {
-
+            campo = "peso_medio_lote::text";
         } else if (campo.equals("peso maximo".toUpperCase())) {
-
+            campo = "peso_maximo_lote::text";
         } else if (campo.equals("peso total".toUpperCase())) {
-
+            campo = "peso_total_lote::text";
         } else if (campo.equals("ração".toUpperCase())) {
-
+            campo = "nome_alimento::text";
         } else if (campo.equals("peso carcaça".toUpperCase())) {
-
+            campo = "carcaca_lote::text";
         } else if (campo.equals("arroba".toUpperCase())) {
-
+            campo = "arroba_lote::text";
         } else if (campo.equals("apartações".toUpperCase())) {
-
+            campo = "MAX::text";
         } else if (campo.equals("animais".toUpperCase())) {
-
+            campo = "quantidade_lote::text";
         }
+        condicao = "'" + condicao.toUpperCase() + "%'";
 
         List<Lote_DTO> lotes = new LinkedList<>();
 

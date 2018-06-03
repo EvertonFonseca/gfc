@@ -185,11 +185,11 @@ public class DCRacao extends DialogAbstracao {
 
                 int size = table.getRowCount();
 
-                WText varNome = new WText(nome.toUpperCase());
+                WText varNome = new WText(Web.UTF8toISO(nome).toUpperCase());
                 varNome.getDecorationStyle().getFont().setSize(new WLength("14px"));
                 varNome.setTextAlignment(AlignmentFlag.AlignCenter);
 
-                WText varValor = new WText(valor.toUpperCase());
+                WText varValor = new WText(Web.UTF8toISO(valor).toUpperCase());
                 varValor.getDecorationStyle().getFont().setSize(new WLength("14px"));
                 varValor.setTextAlignment(AlignmentFlag.AlignCenter);
 
@@ -241,7 +241,7 @@ public class DCRacao extends DialogAbstracao {
 
         public DialogAtributo() {
             super("Receita");
-            this.resize(new WLength(300, WLength.Unit.Pixel), new WLength(250, WLength.Unit.Pixel));
+            this.resize(new WLength(350, WLength.Unit.Pixel), new WLength(250, WLength.Unit.Pixel));
             this.setResizable(false);
             this.init();
 

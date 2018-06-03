@@ -178,4 +178,9 @@ public class Apartacao_DAO {
         }
         return status;
     }
+
+    public static List<Apartacao_DTO> readAllLotesByFiltro(String campo, String condicao) {
+  
+        return null;
+    }
 }

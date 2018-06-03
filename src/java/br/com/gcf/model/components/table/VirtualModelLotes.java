@@ -74,6 +74,11 @@ public class VirtualModelLotes<T> extends VirtualAbstractTableModel<T> {
                     Lote_DTO lote = (Lote_DTO) getTemplate(index.getRow());
                     dialogDELote = new DELote(getWeb(), lote);
 
+                    dialogDELote.getSignalInsert().addListener(dialogDELote, () -> {
+
+                          updateTable();
+                    });
+                    
                     dialogDELote.getSignalClose().addListener(dialogDELote, () -> {
 
                         dialogDELote = null;

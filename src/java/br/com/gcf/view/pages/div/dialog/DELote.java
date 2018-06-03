@@ -104,7 +104,7 @@ public class DELote extends DialogAbstracao {
 
             if (Lote_DAO.update(lote)) {
 
-                web.createMessageTemp("Lote atualziado com sucesso!", Web.Tipo_Mensagem.SUCESSO);
+                getSignalInsert().trigger("Lote atualziado com sucesso!");
             }
             reject();
         });

@@ -11,12 +11,12 @@ import eu.webtoolkit.jwt.Cursor;
 import eu.webtoolkit.jwt.Side;
 import eu.webtoolkit.jwt.WAnimation;
 import eu.webtoolkit.jwt.WApplication;
-import eu.webtoolkit.jwt.WBreak;
+import eu.webtoolkit.jwt.WBorder;
 import eu.webtoolkit.jwt.WColor;
 import eu.webtoolkit.jwt.WContainerWidget;
 import eu.webtoolkit.jwt.WHBoxLayout;
+import eu.webtoolkit.jwt.WInteractWidget;
 import eu.webtoolkit.jwt.WLength;
-import eu.webtoolkit.jwt.WTemplate;
 import eu.webtoolkit.jwt.WText;
 import eu.webtoolkit.jwt.WVBoxLayout;
 import eu.webtoolkit.jwt.WWidget;
@@ -45,8 +45,22 @@ public class MenuDown extends WContainerWidget {
 
         this.createPageDown(map);
     }
+    public MenuDown(String text) {
 
-    private void createPageDown(MapaLista<String, String> map) {
+        this.titulo = new WText(text, this);
+        this.seta = new WText(this);
+        this.seta.setFloatSide(Side.Right);
+        this.seta.setStyleClass("icon-submenu lnr  lnr-chevron-left");
+
+        this.titulo.clicked().addListener(this, (event) -> {
+            this.eventMouseClicked();
+        });
+        this.seta.clicked().addListener(this, (event) -> {
+            this.eventMouseClicked();
+        });
+    }
+
+    public void createPageDown(MapaLista<String, String> map) {
 
         this.divDown = new WContainerWidget(this);
         this.divDown.hide();
@@ -55,12 +69,18 @@ public class MenuDown extends WContainerWidget {
         boxLote.setContentsMargins(5,15,0,0);
         boxLote.setSpacing(15);
 
-        for (MapaLista.Mapa object : map.getLista()) {
+        
+        for (int i = 0; i < map.getLista().size(); i++) {
 
+            MapaLista.Mapa object = map.getLista().get(i);
             String icone = (String) object.getKey();
             String texto = (String) object.getValue();
 
             WContainerWidget divMenu = new WContainerWidget();
+            divMenu.setObjectName(String.valueOf(i));
+            divMenu.setCanReceiveFocus(true);
+            divMenu.getDecorationStyle().setBorder(new WBorder(WBorder.Style.Solid, WBorder.Width.Thin, new WColor("")), Side.Bottom);
+            
             WHBoxLayout boxH = new WHBoxLayout(divMenu);
             boxH.setContentsMargins(0, 0, 0, 0);
             boxH.setSpacing(10);
@@ -68,11 +88,32 @@ public class MenuDown extends WContainerWidget {
             WText iconeMenu = new WText(icone);
             iconeMenu.getDecorationStyle().getFont().setSize(new WLength(14, WLength.Unit.Pixel));
             
-            WText textMenu = new WText(texto);
+            WInteractWidget textMenu;
+
+            if (!object.isMenuDown()) {
+                textMenu = new WText(texto);
+            } else {
+                textMenu = new MenuDown(texto);
+            }
+            
             textMenu.getDecorationStyle().getFont().setSize(new WLength(13, WLength.Unit.Pixel));
 
             boxH.addWidget(iconeMenu,0,AlignmentFlag.AlignMiddle);
-            boxH.addWidget(textMenu,1,AlignmentFlag.AlignMiddle);
+            boxH.addWidget(textMenu, 1, AlignmentFlag.AlignMiddle);
+
+            divMenu.focussed().addListener(divMenu, () -> {
+
+                divMenu.getDecorationStyle().
+                        setBorder(new WBorder(WBorder.Style.Solid, WBorder.Width.Thin, new WColor("#1aa3ff")), Side.Bottom);
+
+                this.getListDivDown().forEach((item) -> {
+
+                    if (!divMenu.getObjectName().equals(item.getObjectName())) {
+                        item.getDecorationStyle().setBorder(new WBorder(WBorder.Style.Solid, WBorder.Width.Thin, new WColor("")), Side.Bottom);
+                    }
+
+                });
+            });
             
             divMenu.mouseWentOver().addListener(divMenu, (event) -> {
 
@@ -96,6 +137,15 @@ public class MenuDown extends WContainerWidget {
         map.clear();
         map = null;
         //fim 
+    }
+
+    public void clearChildBorder() {
+
+        this.getListDivDown().forEach((item) -> {
+
+            item.getDecorationStyle().setBorder(new WBorder(WBorder.Style.Solid, WBorder.Width.Thin, new WColor("")), Side.Bottom);
+      
+        });
     }
 
     public List<WContainerWidget> getListDivDown() {

@@ -57,6 +57,7 @@ public class MenuBar extends WContainerWidget {
         public static int USUARIO_USUARIOS = 0x09;
         public static int USUARIO_PERFIL = 0x0A;
         public static int RACAO = 0x0B;
+        public static int FAMILIA = 0x0C;
     }
 
     public MenuBar(PAdmin pgAdmin) {
@@ -82,6 +83,7 @@ public class MenuBar extends WContainerWidget {
         map.put("<span class=\"lnr lnr-home\"></span> ", "<span>Lotes</span>");
         map.put("<span class=\"fa fa-sitemap\"></span> ", "<span>Apartações</span>");
         map.put("<span class=\"fa fa-paw\"></span> ", "<span>Animais</span>");
+        map.put("<span class=\"lnr lnr-list\"></span> ", "<span>Família</span>");
         map.put("<span class=\"lnr lnr-book\"></span> ", "<span>Histórico</span>");
         map.put("<span class=\"lnr lnr-leaf\"></span> ", "<span>Ração</span>");
         this.textLotes = new MenuDown("<i class=\"lnr lnr-laptop\"></i><span>Fazenda</span>", map);
@@ -126,6 +128,10 @@ public class MenuBar extends WContainerWidget {
 
         //listenner
         getTextHome().clicked().addListener(this, (mouse) -> {
+
+            this.textLotes.clearChildBorder();
+            this.textUser.clearChildBorder();
+
             changeSelectedColor("idHome");
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextHome());
             signalMenuEvent.trigger(Page.HOME);
@@ -133,35 +139,69 @@ public class MenuBar extends WContainerWidget {
         });
 
         getTextLotes().clicked().addListener(this, (mouse) -> {
+
             changeSelectedColor("idLote");
+
         });
         loteDown.get(0).clicked().addListener(this, (mouse) -> {
+
+            this.textUser.clearChildBorder();
+
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextLotes());
             signalMenuEvent.trigger(Page.LOTES);
         });
         loteDown.get(1).clicked().addListener(this, (mouse) -> {
+
+            this.textUser.clearChildBorder();
+
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextApartacao());
             signalMenuEvent.trigger(Page.APARTACAO);
         });
         loteDown.get(2).clicked().addListener(this, (mouse) -> {
+
+            this.textUser.clearChildBorder();
+
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextAnimais());
             signalMenuEvent.trigger(Page.ANIMAIS);
         });
-        loteDown.get(4).clicked().addListener(this, (mouse) -> {
+        loteDown.get(3).clicked().addListener(this, (mouse) -> {
+
+            this.textUser.clearChildBorder();
+
+            this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextAnimais());
+            signalMenuEvent.trigger(Page.FAMILIA);
+        });
+        loteDown.get(5).clicked().addListener(this, (mouse) -> {
+
+            this.textUser.clearChildBorder();
+
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextLotes());
             signalMenuEvent.trigger(Page.RACAO);
         });
         getTextEstatistica().clicked().addListener(this, (mouse) -> {
+
+            this.textLotes.clearChildBorder();
+            this.textUser.clearChildBorder();
+
             changeSelectedColor("idChart");
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextEstatistica());
             signalMenuEvent.trigger(Page.ESTATISTICA);
+
         });
         getTextNotificacao().clicked().addListener(this, (mouse) -> {
+
+            this.textLotes.clearChildBorder();
+            this.textUser.clearChildBorder();
+
             changeSelectedColor("idAlarm");
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextNotificacao());
             signalMenuEvent.trigger(Page.NOTIFICACAO);
         });
         getTextConfig().clicked().addListener(this, (mouse) -> {
+
+            this.textLotes.clearChildBorder();
+            this.textUser.clearChildBorder();
+
             changeSelectedColor("idConfig");
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextConfig());
             signalMenuEvent.trigger(Page.CONFIGURACAO);
@@ -171,18 +211,30 @@ public class MenuBar extends WContainerWidget {
         });
 
         userDown.get(0).clicked().addListener(this, (mouse) -> {
+
+            this.textLotes.clearChildBorder();
+
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextUser());
             signalMenuEvent.trigger(Page.USUARIO_PERFIL);
         });
         userDown.get(1).clicked().addListener(this, (mouse) -> {
+
+            this.textLotes.clearChildBorder();
+
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextUser());
             signalMenuEvent.trigger(Page.USUARIO_USUARIOS);
         });
         userDown.get(2).clicked().addListener(this, (mouse) -> {
+
+            this.textLotes.clearChildBorder();
+
             this.pgAdmin.getNavBar().focusNavMenuBar(this.pgAdmin.getNavBar().getTextUser());
             signalMenuEvent.trigger(Page.USUARIO_CATETORIA);
         });
         userDown.get(4).clicked().addListener(this, (mouse) -> {
+
+            this.textLotes.clearChildBorder();
+
             this.pgAdmin.logout();
         });
 

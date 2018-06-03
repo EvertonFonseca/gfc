@@ -40,7 +40,7 @@ import java.util.List;
  *
  * @author Windows
  */
-public class DivApartacao extends WContainerWidget{
+public class DivApartacao extends WContainerWidget {
 
     private WVBoxLayout box;
     private WTemplate tempFlux;
@@ -80,13 +80,13 @@ public class DivApartacao extends WContainerWidget{
 
     }
 
-        @Override
+    @Override
     public void remove() {
-    
-        ((VirtualAbstractTableModel)this.tableView.getModel()).clear();
-         super.remove(); //To change body of generated methods, choose Tools | Templates.
+
+        ((VirtualAbstractTableModel) this.tableView.getModel()).clear();
+        super.remove(); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     private void createTable() {
 
         WVBoxLayout boxV = new WVBoxLayout(divMain);
@@ -135,8 +135,8 @@ public class DivApartacao extends WContainerWidget{
 
                 int row = index.getRow();
                 int column = index.getColumn();
-                
-                System.out.println("Selection: "+row+" "+column);
+
+                System.out.println("Selection: " + row + " " + column);
 
             } catch (Exception e) {
             }
@@ -156,14 +156,14 @@ public class DivApartacao extends WContainerWidget{
 
         WText labelFiltro = new WText("Filtro:");
         labelFiltro.setTextAlignment(AlignmentFlag.AlignMiddle);
-        
+
         EditLine textFiltro = new EditLine();
         textFiltro.setPlaceholderText("Filtrar por");
-        textFiltro.setMaximumSize(new WLength(250, WLength.Unit.Pixel),WLength.Auto);
-        
-        WTemplate btBuscar =  new WTemplate();
+        textFiltro.setMaximumSize(new WLength(250, WLength.Unit.Pixel), WLength.Auto);
+
+        WTemplate btBuscar = new WTemplate();
         btBuscar.setTemplateText("<button type=\"button\" class=\"btn btn-primary\">Filtrar</button>");
-        
+
         ComboBox<String> comboSelector = new ComboBox<>(
                 new String[]{
                     "Sem Filtro".toUpperCase(),
@@ -174,8 +174,27 @@ public class DivApartacao extends WContainerWidget{
                     "De".toUpperCase(),
                     "Até".toUpperCase(),
                     "Referencia".toUpperCase()});
-        
-        comboSelector.setMaximumSize(new WLength(150, WLength.Unit.Pixel),WLength.Auto);
+
+        comboSelector.setMaximumSize(new WLength(150, WLength.Unit.Pixel), WLength.Auto);
+
+        btBuscar.clicked().addListener(btBuscar, (mouse) -> {
+
+            if (comboSelector.getCurrentIndex() == 0) {
+
+                web.createMessageTemp("Nenhum campo foi definido para o filtro!", Web.Tipo_Mensagem.AVISO);
+                return;
+            }
+            if (textFiltro.getText().isEmpty()) {
+
+                this.modelTableFiltro((VirtualModelLotes<Apartacao_DTO>) tableView.getModel(), "", "", true);
+
+            } else {
+
+                String condicao = textFiltro.getText();
+                String campo = comboSelector.getCurrentText().toString();
+                this.modelTableFiltro((VirtualModelLotes<Apartacao_DTO>) tableView.getModel(), campo, condicao, false);
+            }
+        });
 
         Button btAdd = new Button("Adicionar", 10);
         btAdd.setIcon(new WLink("images/apartacao/cerca_nova.png"));
@@ -188,14 +207,13 @@ public class DivApartacao extends WContainerWidget{
 
         onclickedRight.addListener(this, () -> {
 
-
         });
         btAdd.clicked().addListener(divControl, (mouse) -> {
 
             if (this.dialogApartacao == null) {
-              
+
                 this.dialogApartacao = new DCApartacao(web);
-                
+
                 this.dialogApartacao.getSignalInsert().addListener(dialogApartacao, (arg) -> {
 
                     //cleat table
@@ -205,29 +223,29 @@ public class DivApartacao extends WContainerWidget{
                     this.web.createMessageTemp("Apartação inserido com sucesso!", Web.Tipo_Mensagem.SUCESSO);
 
                 });
-                
-                this.dialogApartacao.getSignalClose().addListener(this.dialogApartacao,() -> {
-                    
+
+                this.dialogApartacao.getSignalClose().addListener(this.dialogApartacao, () -> {
+
                     this.dialogApartacao = null;
-                    
+
                 });
             }
 
         });
         btAdd.setAttributeValue("oncontextmenu", onclickedRight.createCall() + "\nevent.cancelBubble = true; event.returnValue = false; return false;");
 
-        boxh.addWidget(labelFiltro,0,AlignmentFlag.AlignMiddle);
-        boxh.addWidget(textFiltro,0,AlignmentFlag.AlignMiddle);
-        boxh.addWidget(btBuscar,0,AlignmentFlag.AlignMiddle);
-        boxh.addWidget(comboSelector,1,AlignmentFlag.AlignMiddle);
-        boxh.addWidget(btAdd, 0,AlignmentFlag.AlignMiddle,AlignmentFlag.AlignRight);
-        boxh.addWidget(btDeletar,0,AlignmentFlag.AlignMiddle,AlignmentFlag.AlignRight);
+        boxh.addWidget(labelFiltro, 0, AlignmentFlag.AlignMiddle);
+        boxh.addWidget(textFiltro, 0, AlignmentFlag.AlignMiddle);
+        boxh.addWidget(btBuscar, 0, AlignmentFlag.AlignMiddle);
+        boxh.addWidget(comboSelector, 1, AlignmentFlag.AlignMiddle);
+        boxh.addWidget(btAdd, 0, AlignmentFlag.AlignMiddle, AlignmentFlag.AlignRight);
+        boxh.addWidget(btDeletar, 0, AlignmentFlag.AlignMiddle, AlignmentFlag.AlignRight);
 
     }
 
     private void modelTable(String[] header, WTableView tableView, boolean isSorting, int index) {
 
-        VirtualModelApartacao<Apartacao_DTO> model = new VirtualModelApartacao(web,0, header, tableView);
+        VirtualModelApartacao<Apartacao_DTO> model = new VirtualModelApartacao(web, 0, header, tableView);
         model.setIsSorting(isSorting);
         tableView.setModel(model);
 
@@ -283,7 +301,7 @@ public class DivApartacao extends WContainerWidget{
 
                     }
                 }
-                 model.updateTable();
+                model.updateTable();
             } finally {
 
                 loader.destroy();
@@ -301,7 +319,88 @@ public class DivApartacao extends WContainerWidget{
                 signal.trigger(apartacoes);
 
                 this.endLock();
-                
+
+            }
+        });
+    }
+
+    private void modelTableFiltro(VirtualModelLotes<Apartacao_DTO> model, String campo, String condicao, boolean isAll) {
+
+        Signal1 signalApartacao = new Signal1();
+
+        Loader loader = new Loader(web);
+
+        signalApartacao.addListener(this, (args) -> {
+
+            List<Apartacao_DTO> apartacoes = (List<Apartacao_DTO>) args;
+
+            if (apartacoes == null) {
+                return;
+            }
+            try {
+
+                for (int i = 0; i < apartacoes.size(); i++) {
+
+                    Apartacao_DTO apartacao = apartacoes.get(i);
+                    model.addTemplate(i, apartacao);
+
+                    for (int j = 0; j < model.getHeaderNamesColumns().length; j++) {
+
+                        switch (j) {
+
+                            case 0: // codigo
+                                model.insert(i, j, String.valueOf(apartacao.getId()));
+                                break;
+                            case 1: // apartacao
+                                model.insert(i, j, apartacao.getNome());
+                                break;
+                            case 2: // Lote
+                                model.insert(i, j, apartacao.getLote().getNome());
+                                break;
+                            case 3: // tipo
+                                model.insert(i, j, apartacao.getTipo().getNome());
+                                break;
+                            case 4: // de
+                                model.insert(i, j, apartacao.getDe());
+                                break;
+                            case 5: // ate
+                                model.insert(i, j, apartacao.getAte());
+                                break;
+                            case 6: // referencia
+                                model.insert(i, j, apartacao.getTipo().getReferencia());
+                                break;
+                            case 7: // editar
+                                model.insert(i, j, "");
+                                break;
+                            case 8: // remover
+                                model.insert(i, j, "");
+                                break;
+                        }
+
+                    }
+                }
+                model.updateTable();
+            } finally {
+
+                loader.destroy();
+            }
+        });
+
+        ReportBean.runReports(new ReportTask<Signal1>(WApplication.getInstance(), signalApartacao) {
+            @Override
+            public void run() {
+
+                List<Apartacao_DTO> ap = null;
+                if (!isAll) {
+                    ap = Apartacao_DAO.readAllLotesByFiltro(campo, condicao);
+                } else {
+                    ap = Apartacao_DAO.readAllApartacoes();
+                }
+                this.beginLock();
+
+                signal.trigger(ap);
+
+                this.endLock();
             }
         });
     }

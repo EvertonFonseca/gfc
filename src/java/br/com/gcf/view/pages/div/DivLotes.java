@@ -54,6 +54,7 @@ public class DivLotes extends WContainerWidget {
     private Web web;
     private WTableView tableView;
     private DCLote dialogLote;
+    private boolean isFiltroActive = false;
 
     public DivLotes(Web web) {
 
@@ -196,7 +197,15 @@ public class DivLotes extends WContainerWidget {
 
         btAdd.setMaximumSize(new WLength(140, WLength.Unit.Pixel), new WLength(40, WLength.Unit.Pixel));
         btDeletar.setMaximumSize(new WLength(140, WLength.Unit.Pixel), new WLength(40, WLength.Unit.Pixel));
-      
+        
+        textFiltro.changed().addListener(textFiltro,() -> {
+        
+             if(textFiltro.getText().isEmpty() && this.isFiltroActive)
+             {
+                 btBuscar.clicked().trigger(null);
+                 this.isFiltroActive = false;
+             }
+        });
         
         btBuscar.clicked().addListener(btBuscar,(mouse) -> {
       
@@ -211,6 +220,7 @@ public class DivLotes extends WContainerWidget {
                 
             } else {
                
+                this.isFiltroActive = true;
                 String condicao = textFiltro.getText();
                 String campo = comboSelector.getCurrentText().toString();
                 this.modelTableFiltro((VirtualModelLotes<Lote_DTO>) tableView.getModel(), campo, condicao,false);

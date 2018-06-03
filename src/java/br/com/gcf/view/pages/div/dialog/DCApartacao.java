@@ -22,21 +22,18 @@ import br.com.gcf.model.dto.Lote_DTO;
 import br.com.gcf.model.dto.TipoApartacao_DTO;
 import br.com.gcf.view.Web;
 import br.com.gcf.view.WebMain;
-import br.com.gcf.view.pages.div.DivApartacao;
 import eu.webtoolkit.jwt.AlignmentFlag;
 import eu.webtoolkit.jwt.WAnimation;
-import eu.webtoolkit.jwt.WColor;
 import eu.webtoolkit.jwt.WContainerWidget;
 import eu.webtoolkit.jwt.WGridLayout;
 import eu.webtoolkit.jwt.WLength;
+import eu.webtoolkit.jwt.WTemplate;
 import eu.webtoolkit.jwt.WText;
 import eu.webtoolkit.jwt.WVBoxLayout;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -64,8 +61,8 @@ public class DCApartacao extends DialogAbstracao {
 
         this.web = web;
 
-        this.resize(new WLength(600, WLength.Unit.Pixel), new WLength(450, WLength.Unit.Pixel));
-        this.setResizable(true);
+        this.resize(new WLength(650, WLength.Unit.Pixel), new WLength(460, WLength.Unit.Pixel));
+        this.setResizable(false);
         this.init();
 
         WAnimation animation = new WAnimation(WAnimation.AnimationEffect.SlideInFromTop);
@@ -76,7 +73,7 @@ public class DCApartacao extends DialogAbstracao {
     private void init() {
 
         //dados empresa
-        WContainerWidget divDadosLote = createDadosLote();
+        WContainerWidget divDadosLote = createDados();
         this.divDadosCondicao = createPanelCondicao();
         this.divDadosCondicaoData = createPanelCondicaoData();
 
@@ -87,7 +84,7 @@ public class DCApartacao extends DialogAbstracao {
         WContainerWidget divCenter = new WContainerWidget(getContents());
 
         WVBoxLayout grid = new WVBoxLayout(divCenter);
-        grid.setSpacing(5);
+        grid.setSpacing(10);
 
         grid.addWidget(divDadosLote);
         grid.addWidget(divDadosCondicao);
@@ -136,7 +133,7 @@ public class DCApartacao extends DialogAbstracao {
 
     }
 
-    private WContainerWidget createDadosLote() {
+    private WContainerWidget createDados() {
 
         WContainerWidget container = new WContainerWidget();
         container.resize(new WLength(90, WLength.Unit.Percentage), WLength.Auto);
@@ -151,10 +148,35 @@ public class DCApartacao extends DialogAbstracao {
         WText labelRacao = new WText("Ração:");
         WText labelApartacao = new WText("Apartacao:");
 
-        ButtonUtil btAddRacao = this.createBtUtil("Adicionar uma nova ração");
+        WTemplate btAddLote = new WTemplate();
+        btAddLote.setTemplateText("<button type=\"button\" style=\"\" class=\"btn btn-default\">+</button>");
+
+        btAddLote.clicked().addListener(this, (mouse) -> {
+
+            DCLote dc = new DCLote(web);
+            dc.getSignalInsert().addListener(dc, (arg) -> {
+
+                //cleat table
+                this.comboLote.setListItens(Lote_DAO.readAllLotesFazendas());
+                this.web.createMessageTemp(arg, Web.Tipo_Mensagem.SUCESSO);
+
+            });
+        });
+        
+        
+        WTemplate btAddRacao = new WTemplate();
+        btAddRacao.setTemplateText("<button type=\"button\" style=\"\" class=\"btn btn-default\">+</button>");
 
         btAddRacao.clicked().addListener(this, (mouse) -> {
 
+            DCRacao dc = new DCRacao(web);
+            dc.getSignalInsert().addListener(dc, (arg) -> {
+
+                //cleat table
+                this.comboRacao.setListItens(Alimento_DAO.readAllAlimentos());
+                this.web.createMessageTemp(arg, Web.Tipo_Mensagem.SUCESSO);
+
+            });
         });
  
         this.comboLote = new ComboBox(Lote_DAO.readAllLotesFazendas());
@@ -248,12 +270,14 @@ public class DCApartacao extends DialogAbstracao {
         //add grid
         grid.addWidget(labelLote, 0, 0, AlignmentFlag.AlignMiddle);
         grid.addWidget(comboLote, 0, 1, AlignmentFlag.AlignMiddle);
+        grid.addWidget(btAddLote, 0, 2, AlignmentFlag.AlignMiddle);
 
         grid.addWidget(labelTipo, 1, 0, AlignmentFlag.AlignMiddle);
         grid.addWidget(comboTipoAp, 1, 1, AlignmentFlag.AlignMiddle);
 
         grid.addWidget(labelRacao, 2, 0, AlignmentFlag.AlignMiddle);
         grid.addWidget(comboRacao, 2, 1, AlignmentFlag.AlignMiddle);
+        grid.addWidget(btAddRacao, 2, 2, AlignmentFlag.AlignMiddle);
 
         grid.addWidget(labelApartacao, 3, 0, AlignmentFlag.AlignMiddle);
         grid.addWidget(textNome, 3, 1, AlignmentFlag.AlignMiddle);

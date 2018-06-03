@@ -7,6 +7,9 @@ package br.com.gcf.view;
 
 import br.com.gcf.control.CookieLogin;
 import br.com.gcf.control.dao.Usuario_DAO;
+import br.com.gcf.control.threads.ReportBean;
+import br.com.gcf.control.threads.ReportTask;
+import br.com.gcf.control.threads.ReportTask2;
 import br.com.gcf.model.components.control.EditLine;
 import br.com.gcf.view.utils.FrmLostPassword;
 import eu.webtoolkit.jwt.Cursor;
@@ -16,7 +19,10 @@ import eu.webtoolkit.jwt.WContainerWidget;
 import eu.webtoolkit.jwt.WLineEdit;
 import br.com.gcf.model.components.control.Button;
 import br.com.gcf.model.components.dialog.DMessagem;
+import br.com.gcf.model.components.dialog.Loader;
 import br.com.gcf.model.dto.Usuario_DTO;
+import eu.webtoolkit.jwt.Signal;
+import eu.webtoolkit.jwt.Signal1;
 import eu.webtoolkit.jwt.WImage;
 import eu.webtoolkit.jwt.WSound;
 import eu.webtoolkit.jwt.WTemplate;
@@ -32,6 +38,7 @@ public class PageLogin extends WContainerWidget {
     private WSound sound;
     private Web web;
     private Button btLogin;
+    private Loader loader;
 
     public PageLogin(Web web) {
 
@@ -82,46 +89,59 @@ public class PageLogin extends WContainerWidget {
 
         btLogin.clicked().addListener(this, (mouse) -> {
 
-            if (isUserEmpty()) {
-              
-                this.btLogin.setEnabled(false);
-                DMessagem mesagem = web.createMessageTemp("O campo Email ou Nome não foi preenchido!", Web.Tipo_Mensagem.AVISO);
-                mesagem.getSignalClosing().addListener(mesagem, () -> {
-                    this.btLogin.setEnabled(true);
-                });
-                return;
-            }
-            //checa se o login é valido
-            if (!checaUserLoginOn()) {
+            this.loader = new Loader(this.web);
+            
+            ReportBean.runReports(new ReportTask<PageLogin>(WApplication.getInstance(), this) {
+                @Override
+                public void run() {
 
-                return;
-            }
+                    this.beginLock();
+                    if (isUserEmpty()) {
 
-            if (checkBox.isChecked()) {
+                        signal.btLogin.setEnabled(false);
+                        DMessagem mesagem = web.createMessageTemp("O campo Email ou Nome não foi preenchido!", Web.Tipo_Mensagem.AVISO);
+                        mesagem.getSignalClosing().addListener(mesagem, () -> {
+                            signal.btLogin.setEnabled(true);
+                        });
+                        signal.loader.destroy();
+                        this.endLock();
+                        return;
+                    }
+                    //checa se o login é valido
+                    if (!checaUserLoginOn()) {
+                        signal.loader.destroy();
+                        this.endLock();
+                        return;
+                    }
 
-                if (Index.mapCookies.containsKey(key)) {
+                    if (checkBox.isChecked()) {
 
-                    CookieLogin cookie = new CookieLogin(key, textEmail.getText(), textSenha.getText());
-                    Index.mapCookies.replace(key, cookie);
+                        if (Index.mapCookies.containsKey(key)) {
 
-                } else {
+                            CookieLogin cookie = new CookieLogin(key, textEmail.getText(), textSenha.getText());
+                            Index.mapCookies.replace(key, cookie);
 
-                    CookieLogin cookie = new CookieLogin(key, textEmail.getText(), textSenha.getText());
-                    Index.mapCookies.put(key, cookie);
+                        } else {
 
+                            CookieLogin cookie = new CookieLogin(key, textEmail.getText(), textSenha.getText());
+                            Index.mapCookies.put(key, cookie);
+
+                        }
+                    }
+
+                    if (signal.sound != null) {
+                        signal.sound.stop();
+                        signal.sound = null;
+                    }
+
+                    signal.web.getServer().postAll(textEmail.getText());
+                    System.out.println("Conection Email: " + textEmail.getText());
+                    app.setInternalPath("admin", true);
+                    signal.loader.destroy();
+                    this.endLock();
+                
                 }
-            }
-
-            if (this.sound != null) {
-                this.sound.stop();
-                this.sound = null;
-            }
-
-            this.web.getServer().postAll(textEmail.getText());
-
-            System.out.println("Conection Email: " + textEmail.getText());
-            WApplication.getInstance().setInternalPath("admin", true);
-
+            });
         });
 
         WText textForgetPass = new WText("<a>Forgot password?</a>");
